@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>آرش رستمی | مربی بدنسازی و برنامه‌ی آنلاین</title>
+<meta name="description" content="برنامه‌ی تمرینی و غذایی اختصاصی، کوچینگ آنلاین و حضوری با آرش رستمی. نتیجه‌ی واقعی شاگردان را ببینید.">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="preload" href="fonts/Vazirmatn.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%23c6ff3d'/><path d='M20 50h60M28 36v28M72 36v28M20 42v16M80 42v16' stroke='%230b0b0c' stroke-width='9' stroke-linecap='round'/></svg>">
+</head>
+<body>
+<header class="hdr" id="hdr">
+  <div class="wrap">
+    <a href="#top" class="logo">آرش<b>.</b>فیت</a>
+    <nav class="nav"><a href="#about">درباره من</a><a href="#plans">برنامه‌ها</a><a href="#results">نتایج</a><a href="#reviews">نظرات</a><a href="#faq">سؤالات</a></nav>
+    <a href="#plans" class="btn btn-lime">شروع کن</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <img src="img/hero.svg" alt="" width="800" height="1000" fetchpriority="high">
+    <div class="wrap">
+      <span class="pill">⚡ ظرفیت این ماه: فقط ۸ نفر</span>
+      <h1>بدنی که<br>می‌خواهی را <span class="hl">بساز</span></h1>
+      <p>برنامه‌ی تمرین و تغذیه‌ی اختصاصی، با پیگیری هفتگی. بدون رژیم‌های عجیب، با نتیجه‌ای که می‌ماند.</p>
+      <div class="cta">
+        <button class="btn btn-lime" data-book="pro">همین حالا رزرو کن</button>
+        <a href="#results" class="btn btn-line">نتایج شاگردان</a>
+      </div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </section>
+
+  <div class="strip-box" data-dbg-ok><div class="strip" aria-hidden="true"><div id="strip"></div></div></div>
+
+  <section id="about">
+    <div class="wrap bio">
+      <figure class="bio-img rv"><img src="img/coach.svg" alt="آرش رستمی" width="300" height="400" loading="lazy"><figcaption><b id="coachName"></b><span id="coachTitle"></span></figcaption></figure>
+      <div class="rv">
+        <span class="eyebrow">درباره من</span>
+        <h2>مربی‌ای که <span class="hl">کنارت</span> می‌ماند</h2>
+        <p class="lead" id="bio"></p>
+        <ul class="certs" id="certs"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="plans" class="center">
+    <div class="wrap">
+      <span class="eyebrow">برنامه‌ها و قیمت</span>
+      <h2>برنامه‌ات را انتخاب کن</h2>
+      <p class="lead">همه‌ی برنامه‌ها اختصاصی نوشته می‌شوند؛ بر اساس هدف، سطح و زمانی که داری.</p>
+      <div class="billing" role="group" aria-label="دوره‌ی پرداخت">
+        <button class="on" data-bill="1">ماهانه</button>
+        <button data-bill="3">سه‌ماهه <em id="discLbl"></em></button>
+      </div>
+      <div class="plans" id="planList" style="text-align:right"></div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="wrap">
+      <div class="center rv"><span class="eyebrow">قبل و بعد</span><h2>نتیجه‌ها حرف می‌زنند</h2><p class="lead">دستگیره را بکشید تا تغییر را ببینید.</p></div>
+      <div class="results" id="resList" data-dbg-ok style="margin-top:28px"></div>
+      <p class="note">تصاویر با رضایت شاگردان منتشر شده‌اند. نتایج افراد متفاوت است.</p>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="wrap">
+      <div class="center rv" style="margin-bottom:28px"><span class="eyebrow">نظرات شاگردان</span><h2>از زبان خودشان</h2></div>
+      <div class="tests" id="testList"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="center rv" style="margin-bottom:28px"><span class="eyebrow">سؤالات متداول</span><h2>قبل از شروع</h2></div>
+      <div class="faq" id="faqList"></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap"><div class="final rv">
+      <h2>امروز شروع کن، نه دوشنبه</h2>
+      <p>یک پیام بده؛ مشاوره‌ی اول رایگان است.</p>
+      <button class="btn" data-book="">مشاوره‌ی رایگان</button>
+    </div></div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="soc"><a id="ig" target="_blank" rel="noopener">اینستاگرام</a><a id="tgLink" target="_blank" rel="noopener">تلگرام</a><a id="waLink" target="_blank" rel="noopener">واتساپ</a></div>
+    <p>© ۱۴۰۵ آرش رستمی · طراحی توسط Dreeix</p>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky"><button class="btn btn-lime" data-book="pro">رزرو مشاوره‌ی رایگان</button></div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetT">
+  <button class="x" id="sheetX" aria-label="بستن">×</button>
+  <h3 id="sheetT">رزرو</h3>
+  <p id="sheetP"></p>
+  <div class="opts">
+    <a class="btn wa" id="goWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.7-.1 1.3z"/></svg>پیام در واتساپ</a>
+    <a class="btn tg" id="goTg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.6 18.7 19.8c-.2 1-.9 1.3-1.8.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2l-11 6.9-4.7-1.5c-1-.3-1-1 .2-1.5L20.6 3.4c.8-.3 1.6.2 1.3 1.2z"/></svg>پیام در تلگرام</a>
+  </div>
+</div>
+<div class="sheet-bg" id="sheetBg"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
