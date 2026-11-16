@@ -1,9 +1,10 @@
 // Page-load performance on a throttled "cheap phone" (headless Edge, no window). Launcher: tools/edge.mjs
 // Usage: node tools/perf.mjs <url> [preset]                     preset: slow3g | fast3g | 4g | all (default slow3g)
 //        node tools/perf.mjs <url1> <url2> ... [preset...]      several URLs / presets → one table (runs one at a time, cold cache each)
-// Env: PERF_CPU=4 (CPU slowdown, default 4×), PERF_FILES=5 (biggest files listed per run, 0 = none), PERF_MAX=90 (s per run)
+// Env: PERF_DEV=1 keeps the localhost-only dev layer (blocked by default so local numbers match the live site),
+//      PERF_CPU=4 (CPU slowdown, default 4×), PERF_FILES=5 (biggest files listed per run, 0 = none), PERF_MAX=90 (s per run)
 // Reports: FCP, LCP, load event, 3D ready (performance.mark('3d-ready'), any page can set it), bytes on the wire, requests.
-// Note: python http.server sends files uncompressed; GitHub Pages gzips text (e.g. three.js 676 KB → ~171 KB). Measure the live URL too.
+// Note: python http.server sends files uncompressed; for Pages-like bytes run `node tools/serve-gz.mjs` (port 8090) and measure http://localhost:8090/...
 import { launch, sleep } from './edge.mjs';
 
 const PRESETS = { // Chrome DevTools throttling values (bytes/s, ms)
@@ -31,6 +32,7 @@ async function run(url, name) {
       if (method === 'Network.loadingFinished' || method === 'Network.loadingFailed') { const r = reqs.get(params.requestId); if (r) { r.bytes = params.encodedDataLength || 0; r.failed = method === 'Network.loadingFailed'; } inflight = Math.max(0, inflight - 1); lastNet = Date.now(); }
     });
     await send('Page.enable'); await send('Network.enable'); await send('Network.setCacheDisabled', { cacheDisabled: true });
+    if (!process.env.PERF_DEV) await send('Network.setBlockedURLs', { urls: ['*/dev/dev.js', '*/js/dev-*.js'] });
     await send('Network.emulateNetworkConditions', { offline: false, latency: p.latency, downloadThroughput: p.down, uploadThroughput: p.up });
     await send('Emulation.setCPUThrottlingRate', { rate: CPU });
     await send('Emulation.setDeviceMetricsOverride', { width: 375, height: 812, deviceScaleFactor: 2, mobile: true });
@@ -48,7 +50,7 @@ async function run(url, name) {
     const m = await evalJs(`(() => { const n = performance.getEntriesByType('navigation')[0] || {};
       const g = k => performance.getEntriesByName(k)[0]?.startTime ?? null;
       return { fcp: g('first-contentful-paint'), lcp: window.__lcp || null, lcpEl: window.__lcpEl || '', load: n.loadEventEnd || null, ready3d: g('3d-ready'), mode: window.__hp ? window.__hp.mode + (window.__hp.reason ? ' (' + window.__hp.reason + ')' : '') : '' }; })()`);
-    const list = [...reqs.values()].filter(r => !r.url.startsWith('data:'));
+    const list = [...reqs.values()].filter(r => !r.url.startsWith('data:') && !r.failed);
     return { url, name, ...m, bytes: list.reduce((a, r) => a + r.bytes, 0), n: list.length, files: list.sort((a, b) => b.bytes - a.bytes).slice(0, NFILES), timedOut: Date.now() - t0 >= MAX };
   } finally { await b.close(); }
 }
