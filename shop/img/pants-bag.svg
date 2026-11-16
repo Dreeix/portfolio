@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 375" preserveAspectRatio="xMidYMid slice">
+<rect width="300" height="375" fill="#ece6ff"/><circle cx="240" cy="70" r="90" fill="#fff" opacity=".45"/><ellipse cx="150" cy="345" rx="95" ry="10" fill="#3b2f4a" opacity=".06"/>
+<g stroke="#3b2f4a" stroke-opacity=".08" stroke-width="2"><path d="M100 60 H200 L218 330 H162 L150 140 L138 330 H82Z" fill="#a9c8ec"/><rect x="100" y="60" width="100" height="16" fill="#3b2f4a" opacity=".12"/></g></svg>
