@@ -32,7 +32,13 @@ try {
   await evalJs(`document.documentElement.style.scrollBehavior='auto'; window.__dbg?.reveal(); 1`);
   const total = await evalJs('document.documentElement.scrollHeight');
   const shots = [];
-  for (let i = 0; i < n; i++) {
+  // States mode: SHOT_STATES='["js1","js2"]' → one screenshot per snippet (e.g. each step of a flow) instead of scrolling
+  const states = process.env.SHOT_STATES ? JSON.parse(process.env.SHOT_STATES) : null;
+  if (states) for (const js of states) {
+    await evalJs(`(async()=>{${js}})()`); await sleep(600);
+    shots.push((await send('Page.captureScreenshot', { format: 'png' })).result.data);
+  }
+  else for (let i = 0; i < n; i++) {
     const y = Math.min(i * (h - 60), Math.max(0, total - h));
     await evalJs(`scrollTo(0,${y}); window.__dbg?.reveal(); 1`); await sleep(700);
     shots.push((await send('Page.captureScreenshot', { format: 'png' })).result.data);
