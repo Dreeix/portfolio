@@ -16,11 +16,12 @@
           <a class="btn btn-main" href="${p.url}">مشاهده سایت</a>
           ${[].concat(p.extra || []).map(x => `<a class="btn btn-line" href="${x.url}">${x.label}</a>`).join('')}
         </div>
+        ${[].concat(p.extra || []).some(x => /admin\.html$/.test(x.url)) ? `<p class="demo-note">${M.demoNote}</p>` : ''}
       </div>
     </article>`).join('');
 
-  $('#svc').innerHTML = M.services.map((s, i) => `<div class="rv" style="--d:${i * .08}s"><span>${s.icon}</span><b>${s.title}</b><p>${s.text}</p></div>`).join('');
-  $('#steps').innerHTML = M.steps.map(([t, d], i) => `<li class="rv" style="--d:${i * .1}s"><div><b>${t}</b><p>${d}</p></div></li>`).join('');
+  $('#svc').innerHTML = M.services.map((s, i) => `<div class="rv" style="--d:${i * .04}s"><span>${s.icon}</span><b>${s.title}</b><p>${s.text}</p></div>`).join('');
+  $('#steps').innerHTML = M.steps.map(([t, d], i) => `<li class="rv" style="--d:${i * .05}s"><div><b>${t}</b><p>${d}</p></div></li>`).join('');
 
   // Contact buttons in brand colours with icons (empty values in data.js are skipped)
   const ICONS = {
@@ -37,8 +38,11 @@
   ].filter(Boolean);
   $('#contactLinks').innerHTML = links.map(([k, u, l]) => `<a class="btn btn-${k}" href="${u}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[k]}</svg>${l}</a>`).join('');
 
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .1 });
-  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+  // Scroll reveal: starts while a block is still REVEAL.lead below the screen, so a fast fling on a slow phone lands on content, not blanks
+  const REVEAL = window.__reveal = { lead: '0px 0px 35% 0px' }; // duration: --rv-t in style.css · checked by __dbg revealFast
+  const rvs = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) rvs.forEach(el => el.classList.add('in'));
+  else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: REVEAL.lead }); rvs.forEach(el => io.observe(el)); }
 
   // ----- Motion: transform/opacity only, rAF-throttled, off with prefers-reduced-motion (html.rm). Checked by __dbg.
   // Starts after the first frame (+ html.mo turns on the CSS loops), so motion never delays the first paint on slow phones.

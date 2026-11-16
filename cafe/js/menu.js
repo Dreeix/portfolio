@@ -10,7 +10,7 @@
       <h2>${c.name}${c.note ? `<small>${c.note}</small>` : ''}</h2>
       ${c.items.map(i => `
       <button class="m-item${i.soldOut ? ' so' : ''}" data-id="${i.id}" data-search="${i.name} ${i.desc}">
-        <img src="${i.img}" alt="${i.name}" width="84" height="84" loading="lazy" decoding="async">
+        <img src="${i.img}" alt="${i.name}" width="84" height="84" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='img/new-${i.cat}.svg'">
         <div class="t"><h3>${i.name}${i.soldOut ? '<em class="out">تمام شد</em>' : i.tag ? `<em>${i.tag}</em>` : ''}</h3><p>${i.desc}</p><div class="price">${priceHTML(i.price)}</div></div>
       </button>`).join('')}
     </section>`).join('');
@@ -46,7 +46,7 @@
   const byId = Object.fromEntries(cats.flatMap(c => c.items).map(i => [i.id, i]));
   const sheet = $('#sheet'), bg = $('#sheetBg');
   function open(i) {
-    $('#sheetImg').src = i.img; $('#sheetImg').alt = i.name;
+    $('#sheetImg').src = i.img; $('#sheetImg').onerror = e => { e.target.onerror = null; e.target.src = `img/new-${i.cat}.svg`; }; $('#sheetImg').alt = i.name;
     $('#sheetTitle').textContent = i.name; $('#sheetDesc').textContent = i.desc; $('#sheetPrice').innerHTML = priceHTML(i.price) + (i.soldOut ? '<em class="out">فعلاً تمام شده</em>' : '');
     sheet.classList.add('on'); bg.classList.add('on'); document.body.style.overflow = 'hidden'; $('#sheetX').focus();
   }

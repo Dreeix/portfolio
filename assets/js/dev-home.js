@@ -63,6 +63,26 @@ window.__dbg.site = {
     function showcaseCard() {
       return ME.projects.filter(p => p.showcase).flatMap(p => { const el = document.getElementById('p-' + p.id); return !el ? [`${p.id} card missing`] : [!el.classList.contains('showcase') && `${p.id} not styled as showcase`, !el.querySelector('.badge3d') && `${p.id} has no 3D badge`].filter(Boolean); });
     },
+    // every owner-panel link is followed by the honest "demo, this device only" note
+    function demoNotes() { return ME.projects.filter(p => [].concat(p.extra || []).some(x => /admin\.html$/.test(x.url))).filter(p => document.querySelector(`#p-${p.id} .demo-note`)?.textContent !== ME.demoNote).map(p => `${p.id}: owner-panel demo note missing`); },
+    // reveals: short fade + small stagger, started well before the block is on screen; a jump far down shows content, never blanks
+    async function revealFast() {
+      const bad = [], all = [...document.querySelectorAll('.rv')], y0 = scrollY, H = innerHeight;
+      const t = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--rv-t')), dMax = Math.max(...all.map(e => parseFloat(e.style.getPropertyValue('--d')) || 0));
+      if (!(t <= .5)) bad.push(`reveal fade ${t}s (want ≤ 0.5 s)`);
+      if (dMax > .2) bad.push(`stagger delay up to ${dMax}s (want ≤ 0.2 s)`);
+      if (!(parseFloat(__reveal.lead.split(' ')[2]) >= 25)) bad.push(`reveal starts only ${__reveal.lead} below the screen (want ≥ 25%)`);
+      const html = document.documentElement, sb = html.style.scrollBehavior; html.style.scrollBehavior = 'auto';
+      try {
+        for (const el of all.filter(e => !e.classList.contains('in')).slice(0, 4)) { // jump straight to unrevealed blocks, like a fast fling
+          scrollTo(0, el.getBoundingClientRect().top + scrollY - H / 2);
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(r, 50))));
+          const below = all.filter(e => { const r = e.getBoundingClientRect(); return r.top < H * 1.2 && r.bottom > 0 && !e.classList.contains('in'); });
+          if (below.length) bad.push(`${below.length} block(s) on/near screen not revealed 2 frames after a jump to ${el.id || el.className}`);
+        }
+      } finally { scrollTo(0, y0); html.style.scrollBehavior = sb; }
+      return bad;
+    },
     function thumbsLoaded() { return [...document.querySelectorAll('.phone img')].filter(i => i.complete && !i.naturalWidth).map(i => `thumb not loaded: ${i.getAttribute('src')}`); },
   ],
   // fetches every project page/extra link and reports non-200s

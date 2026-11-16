@@ -11,7 +11,7 @@
     Object.assign(hot.find(i => i.id === 'espresso'), { name: 'آزمون پنل', price: 777000 });
     hot.find(i => i.id === 'latte').soldOut = true;
     v.categories[0].items = hot.filter(i => i.id !== 'mocha');
-    v.categories[1].items.push({ id: 'dbgnew', name: 'نوشیدنی تازه', desc: '', price: 99000, img: 'img/new-cold.svg' });
+    v.categories[1].items.push({ id: 'dbgnew', name: 'نوشیدنی تازه', desc: '', price: 99000, img: 'img/new-cold.svg' }, { id: 'dbgnoimg', name: 'بدون عکس', desc: '', price: 88000 });
     v.hours = v.hours.filter(h => h.day !== 6); v.hours.find(h => h.day === 5).close = 23;
     v.categories.forEach(c => c.items.forEach(i => { delete i.cat; }));
     return v;
@@ -55,6 +55,7 @@
           if (!it('latte')?.classList.contains('so') || !/تمام شد/.test(it('latte').textContent)) bad.push('menu: latte not marked sold out');
           if (!it('dbgnew') || it('dbgnew').closest('.m-cat')?.id !== 'cold' || !/new-cold\.svg$/.test(it('dbgnew').querySelector('img').getAttribute('src'))) bad.push('menu: added item missing / wrong category or picture');
           if (it('mocha')) bad.push('menu: removed item still shown');
+          if (!/new-cold\.svg$/.test(it('dbgnoimg')?.querySelector('img')?.getAttribute('src') || '')) bad.push('menu: item added without a picture got none (mix of pictures / no picture)');
           w = await __dbg.frame('index.html');
           const li = [...w.document.querySelectorAll('#hoursList li')];
           if (li.length !== 7 || !/تعطیل/.test(li[6]?.textContent)) bad.push('landing: Friday not shown closed (7 days listed)');
@@ -87,6 +88,14 @@
           const w = await __dbg.frame('menu.html'), m = w.document.querySelectorAll('.m-item').length;
           if (m !== n) bad.push(`menu with corrupt storage shows ${m}/${n} items`);
         });
+        return bad;
+      },
+      // menu: every item has a picture or none do (never a mix), incl. items added in the owner panel; none broken
+      function menuImages() {
+        const items = [...document.querySelectorAll('.m-item')]; if (!items.length) return [];
+        const withImg = items.filter(b => b.querySelector('img')?.getAttribute('src')), bad = [];
+        if (withImg.length && withImg.length < items.length) bad.push(`${items.length - withImg.length} of ${items.length} menu items have no picture`);
+        items.forEach(b => { const im = b.querySelector('img'); if (im && im.complete && !im.naturalWidth) bad.push(`broken picture: ${b.dataset.id} ${im.getAttribute('src')}`); });
         return bad;
       },
       function prices() { return CAFE.categories.flatMap(c => c.items).filter(i => !(i.price > 0 && i.price % 1000 === 0)).map(i => `bad price ${i.id}: ${i.price}`); },

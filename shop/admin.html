@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>پنل مدیریت | بوتیک یاس</title>
+<meta name="description" content="پنل نمایشی فروشگاه: محصول، قیمت، تخفیف، رنگ و سایز و هزینه‌ی ارسال را خودتان عوض کنید (رمز ۱۲۳۴). تغییرات فقط در مرورگر خودتان می‌ماند.">
 <meta name="theme-color" content="#fff6fa">
 <!-- og: tools/og-tags.mjs -->
 <link rel="canonical" href="https://dreeix.github.io/portfolio/shop/admin.html">
@@ -186,7 +187,6 @@ select{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8
 .ad{padding-top:14px;padding-bottom:130px;max-width:760px}
 .hdr .back{font-size:14px;color:var(--muted);padding:8px 4px;font-weight:700}
 .hdr .back:hover{color:var(--main)}
-.ad-demo{background:var(--lilac);color:var(--ink);border-radius:16px;padding:10px 14px;font-size:13.5px;line-height:1.8;margin-bottom:16px}
 .ad h1{font-size:22px;line-height:1.4}
 .ad .sub{color:var(--muted);font-size:14px;margin:4px 0 14px}
 .ad-login{max-width:380px;margin:20px auto;background:#fff;border-radius:var(--r);padding:22px;box-shadow:0 4px 18px rgba(59,47,74,.06)}
@@ -236,10 +236,16 @@ select{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8
 .ad-msg.err{color:var(--sale)}.ad-msg.ok{color:#1f8a63}
 .ad-msg a{color:var(--main);text-decoration:underline}
 .ad-bar .btn{flex:none}
+/* demo banner (dismissible): edits stay in this browser only */
+.demo-bar{display:flex;align-items:center;gap:8px;padding:2px 16px 2px 4px;background:var(--lilac);color:var(--ink);font-size:13px;line-height:1.7}
+.demo-bar[hidden]{display:none}
+.demo-bar p{flex:1;padding:8px 0}
+.demo-bar button{flex:none;width:44px;height:44px;border:0;background:none;color:inherit;font:inherit;font-size:22px;line-height:1;cursor:pointer;border-radius:12px}
 </style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ece6ff'/><text x='50' y='68' font-size='52' text-anchor='middle'>🛍️</text></svg>">
 </head>
 <body>
+<div class="demo-bar" role="note"><p>نسخه‌ی نمایشی؛ تغییرات فقط روی همین دستگاه ذخیره می‌شود</p><button type="button" aria-label="بستن پیام" onclick="this.parentNode.hidden=true">×</button></div>
 <header class="hdr">
   <div class="wrap">
     <a href="index.html" class="logo"><i></i>پنل فروشگاه</a>
@@ -247,7 +253,6 @@ select{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8
   </div>
 </header>
 <main class="wrap ad">
-  <p class="ad-demo">نسخه‌ی نمایشی: هر تغییری بدهید فقط در همین مرورگر ذخیره می‌شود و فقط خودتان آن را می‌بینید. با «بازگردانی نسخه‌ی نمایشی» همه‌چیز برمی‌گردد.</p>
   <div id="panel"></div>
 </main>
 
