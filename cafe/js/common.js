@@ -31,6 +31,21 @@ function renderStatus() {
   return s;
 }
 
+// Contact links: real href only when not in demo mode and a value exists; otherwise a demo notice
+function contactLink(a, href, label) {
+  if (!CAFE.demo && href) { a.href = href; return; }
+  a.href = '#'; a.dataset.demo = label; a.removeAttribute('target');
+}
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.append(t); }
+  t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 3200);
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-demo]'); if (!a) return;
+  e.preventDefault(); toast(`نسخه‌ی نمایشی: در سایت واقعی، ${a.dataset.demo} باز می‌شود.`);
+});
+
 // Dev layer: only on local machines, never on the live site
 if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
   const s = document.createElement('script'); s.src = '../dev/dev.js'; s.onload = () => { const c = document.createElement('script'); c.src = 'js/dev-cafe.js'; document.body.append(c); };

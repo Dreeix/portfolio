@@ -8,6 +8,24 @@ const priceFor = (plan, months) => months === 1 ? plan.price : Math.round(plan.p
 const waLink = text => `https://wa.me/${GYM.whatsapp}?text=${encodeURIComponent(text)}`;
 const tgLink = () => `https://t.me/${GYM.telegram}`;
 let months = 1;
+// Contact links: real only when not demo and value exists. kind: whatsapp | telegram | instagram
+const labels = { whatsapp: 'واتساپ مربی', telegram: 'تلگرام مربی', instagram: 'اینستاگرام مربی' };
+function contactLink(a, kind, text = '') {
+  const real = !GYM.demo && GYM[kind];
+  a.dataset.msg = text;
+  if (real) { a.href = kind === 'whatsapp' ? waLink(text) : kind === 'telegram' ? tgLink() : GYM.instagram; a.target = '_blank'; delete a.dataset.demo; }
+  else { a.href = '#'; a.removeAttribute('target'); a.dataset.demo = labels[kind]; }
+}
+function toast(msg) {
+  let t = document.getElementById('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; t.setAttribute('role', 'status'); document.body.append(t); }
+  t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 4200);
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-demo]'); if (!a) return;
+  e.preventDefault();
+  toast(`نسخه‌ی نمایشی: در سایت واقعی، ${a.dataset.demo} باز می‌شود${a.dataset.msg ? ' با پیام: «' + a.dataset.msg + '»' : '.'}`);
+});
 
 (() => {
   const G = GYM;
@@ -71,8 +89,8 @@ let months = 1;
     <p>«${t.text}»</p><figcaption class="who"><span class="av">${t.name[0]}</span><div><b>${t.name}</b><span>${t.plan}</span></div></figcaption></figure>`).join('');
   $('#faqList').innerHTML = G.faq.map(([q, a]) => `<details class="rv"><summary>${q}</summary><p>${a}</p></details>`).join('');
 
-  $('#goWa').href = waLink('سلام'); $('#goTg').href = tgLink();
-  $('#ig').href = G.instagram; $('#tgLink').href = tgLink(); $('#waLink').href = waLink('سلام، از سایت شما پیام می‌دهم.');
+  contactLink($('#goWa'), 'whatsapp', 'سلام'); contactLink($('#goTg'), 'telegram');
+  contactLink($('#ig'), 'instagram'); contactLink($('#tgLink'), 'telegram'); contactLink($('#waLink'), 'whatsapp', 'سلام، از سایت شما پیام می‌دهم.');
 
   // Booking sheet
   const sheet = $('#sheet'), bg = $('#sheetBg');
@@ -81,8 +99,8 @@ let months = 1;
     const what = p ? `برنامه‌ی «${p.name}» (${months > 1 ? 'سه‌ماهه' : 'ماهانه'} – ${faNum(priceFor(p, months))} تومان)` : 'مشاوره‌ی رایگان';
     $('#sheetT').textContent = p ? `رزرو ${p.name}` : 'مشاوره‌ی رایگان';
     $('#sheetP').textContent = `یک پیام آماده برای ${what} باز می‌شود. معمولاً کمتر از یک ساعت جواب می‌دهم.`;
-    $('#goWa').href = waLink(`سلام آرش جان، برای ${what} از سایت پیام می‌دهم.`);
-    $('#goTg').href = tgLink();
+    contactLink($('#goWa'), 'whatsapp', `سلام آرش جان، برای ${what} از سایت پیام می‌دهم.`);
+    contactLink($('#goTg'), 'telegram');
     sheet.classList.add('on'); bg.classList.add('on'); document.body.style.overflow = 'hidden'; $('#sheetX').focus();
   }
   const close = () => { sheet.classList.remove('on'); bg.classList.remove('on'); document.body.style.overflow = ''; };

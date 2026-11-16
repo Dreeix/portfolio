@@ -15,9 +15,9 @@
 
   $('#addr').textContent = C.address;
   $('#phone').textContent = C.phone.replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-  $('#phone').href = C.phoneHref;
-  $('#ig').href = C.social.instagram;
-  $('#tg').href = C.social.telegram;
+  contactLink($('#phone'), C.phoneHref, 'تماس تلفنی');
+  contactLink($('#ig'), C.social.instagram, 'صفحه‌ی اینستاگرام کافه');
+  contactLink($('#tg'), C.social.telegram, 'کانال تلگرام کافه');
   const { lat, lng } = C.map;
   $('#route').innerHTML = [
     ['نشان', `https://neshan.org/maps/@${lat},${lng},16z`],

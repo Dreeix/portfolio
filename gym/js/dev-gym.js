@@ -14,6 +14,7 @@
     checks: [
       function contacts() {
         const bad = [];
+        if (G.demo) return [G.whatsapp, G.telegram, G.instagram].some(Boolean) ? ['demo mode but a real contact value is set in data.js'] : [];
         if (!/^98\d{10}$/.test(G.whatsapp)) bad.push(`whatsapp number not 98xxxxxxxxxx: ${G.whatsapp}`);
         if (!/^[a-zA-Z][\w]{4,31}$/.test(G.telegram)) bad.push(`telegram username invalid: ${G.telegram}`);
         return bad;
@@ -30,9 +31,9 @@
         const bad = [];
         for (const p of [...G.plans, { id: '' }]) {
           g.book(p.id);
-          const wa = document.getElementById('goWa').href;
-          if (!wa.startsWith(`https://wa.me/${G.whatsapp}?text=`)) bad.push(`bad WA link for ${p.id || 'consult'}`);
-          if (p.name && !decodeURIComponent(wa).includes(p.name)) bad.push(`WA text misses plan name ${p.id}`);
+          const a = document.getElementById('goWa'), msg = a.dataset.msg || '';
+          if (G.demo ? !a.dataset.demo : !a.href.startsWith(`https://wa.me/${G.whatsapp}?text=`)) bad.push(`bad WA link for ${p.id || 'consult'}`);
+          if (p.name && !msg.includes(p.name)) bad.push(`WA message misses plan name ${p.id}`);
         }
         g.close(); return bad;
       },

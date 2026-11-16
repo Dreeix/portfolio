@@ -3,13 +3,16 @@
 window.CAFE = {
   name: 'کافه سایه',
   tagline: 'قهوه‌ی تخصصی، شب‌های آرام',
-  phone: '021-22001234',
-  phoneHref: 'tel:+982122001234',
+  // DEMO: placeholders only. Never put a real number/handle here unless it's the client's own.
+  // demo: true makes every contact link show a notice instead of opening anything.
+  demo: true,
+  phone: '021-0000-0000',
+  phoneHref: '',            // e.g. 'tel:+9821xxxxxxxx' for a real client
   address: 'تهران، خیابان شریعتی، بالاتر از پل صدر، کوچه نسترن، پلاک ۱۲',
   map: { lat: 35.7642, lng: 51.4437 },
   social: {
-    instagram: 'https://instagram.com/cafe.saye',
-    telegram: 'https://t.me/cafe_saye',
+    instagram: '',          // e.g. 'https://instagram.com/<client>'
+    telegram: '',           // e.g. 'https://t.me/<client>'
   },
   // day: 0 = Saturday ... 6 = Friday (Persian week). Times are 24h, `close` may pass midnight (e.g. 24 or 25).
   hours: [

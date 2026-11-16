@@ -25,7 +25,11 @@
       ...[...document.images].filter(i => i.complete && i.naturalWidth === 0 && i.getAttribute('src')).map(i => `not loaded: ${i.getAttribute('src')}`),
       ...[...document.images].filter(i => !i.hasAttribute('alt')).map(i => `missing alt: ${i.getAttribute('src')}`),
     ],
-    links: () => [...document.querySelectorAll('a')].filter(a => !a.getAttribute('href') || a.getAttribute('href') === '#').map(a => `empty link: ${desc(a)}`),
+    links: () => [...document.querySelectorAll('a:not([data-demo])')].filter(a => !a.getAttribute('href') || a.getAttribute('href') === '#').map(a => `empty link: ${desc(a)}`),
+    // Portfolio demos must never message/call a real person. A real client build sets __dbg.site.allowContacts = true.
+    noRealContacts: () => dbg.site?.allowContacts ? [] : [...document.querySelectorAll('a[href]')]
+      .filter(a => /^(tel:|sms:|mailto:)|wa\.me|whatsapp\.com|t\.me\/|telegram\.(me|org)|instagram\.com|eitaa\.com|rubika\.ir|ble\.ir/i.test(a.getAttribute('href')))
+      .map(a => `real contact link: ${a.getAttribute('href')} (${desc(a)})`),
     anchors: () => [...document.querySelectorAll('a[href^="#"]')].filter(a => a.hash.length > 1 && !document.getElementById(a.hash.slice(1))).map(a => `dead anchor ${a.hash}`),
     font: () => document.fonts.check('16px Vazirmatn') ? [] : ['Vazirmatn not loaded'],
     tapTargets: () => [...document.querySelectorAll('a,button,input')].filter(el => { const r = el.getBoundingClientRect(); return r.width && r.height && r.height < 32 && !el.closest('p,#dbg'); }).map(el => `small tap target (${el.getBoundingClientRect().height | 0}px): ${desc(el)}`).slice(0, 8),

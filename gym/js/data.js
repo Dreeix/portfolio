@@ -2,9 +2,12 @@
 window.GYM = {
   coach: 'آرش رستمی',
   title: 'مربی بدنسازی و تناسب اندام',
-  whatsapp: '989121234567',          // international format, no + or 00
-  telegram: 'arash_fit',             // username without @
-  instagram: 'https://instagram.com/arash.fit',
+  // DEMO: placeholders only. Never put a real number/handle here unless it's the client's own.
+  // demo: true makes every contact button show a notice (with the message it would send) instead of opening anything.
+  demo: true,
+  whatsapp: '',       // client's number, international format without + (e.g. 98912xxxxxxx)
+  telegram: '',       // client's username without @
+  instagram: '',      // e.g. 'https://instagram.com/<client>'
   stats: [
     { n: 8, suffix: '+', label: 'سال سابقه' },
     { n: 650, suffix: '+', label: 'شاگرد موفق' },

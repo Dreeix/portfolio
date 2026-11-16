@@ -166,3 +166,7 @@ h2{font-size:clamp(28px,7.5vw,48px);font-weight:900;line-height:1.25;letter-spac
   .sticky{display:none}
   .ftr{padding-bottom:30px}
 }
+
+/* Demo notice */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,200%);z-index:100;width:max-content;max-width:calc(100vw - 32px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:600;box-shadow:0 10px 40px rgba(0,0,0,.6);transition:transform .3s;text-align:center;line-height:1.7}
+.toast.on{transform:translate(-50%,0)}
