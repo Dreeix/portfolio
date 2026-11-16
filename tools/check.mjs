@@ -1,5 +1,6 @@
 // Headless __dbg.check() at phone width, printed as text (no window, no screenshot). Launcher: tools/edge.mjs
 // Usage: node tools/check.mjs <url> [width=375] [js-to-run-first]   e.g. node tools/check.mjs http://localhost:8080/shop/
+// Env: CHECK_REDUCED=1 emulates prefers-reduced-motion: reduce.
 // Waits for __dbg.site.ready() when a site defines it (e.g. lazy 3D settling).
 import { launch, sleep, checkNoLeftovers } from './edge.mjs';
 
@@ -10,6 +11,8 @@ const { send, evalJs } = b;
 try {
   await send('Page.enable');
   await send('Emulation.setDeviceMetricsOverride', { width: +W, height: 812, deviceScaleFactor: 1, mobile: true });
+  // CHECK_REDUCED=1 → the page sees prefers-reduced-motion: reduce (motion checks then verify everything is off)
+  if (process.env.CHECK_REDUCED) await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await send('Page.navigate', { url });
   for (let t = 0; t < 40; t++) { await sleep(250); if (await evalJs('!!window.__dbg?.site')) break; }
   await evalJs('document.fonts.ready.then(() => 1)');
