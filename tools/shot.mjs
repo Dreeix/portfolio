@@ -2,16 +2,17 @@
 // Usage: node tools/shot.mjs <url> <out.png> [width=375] [height=812] [screens=6] [js-to-run-before]
 // Produces one contact sheet: `screens` consecutive viewports side by side (phone emulation, real 375px layout).
 // Thumbnails: SHOT_DPR=2 node tools/shot.mjs <url> out.webp 375 760 1   (single screen, webp/jpg, quality 72)
+// EDGE_GL=1 → software WebGL (auto for /headphones/). One launch per call: batch states with SHOT_STATES instead of many runs.
 // SHOT_STATES='["js1","js2"]' → one screen per JS snippet instead of scrolling.  SHOT_TRANSPARENT=1 → keep alpha (posters).
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { pathToFileURL } from 'node:url';
-import { launch, sleep } from './edge.mjs';
+import { launch, sleep, checkNoLeftovers } from './edge.mjs';
 
 const [url, out, W = 375, H = 812, N = 6, pre = ''] = process.argv.slice(2);
 const w = +W, h = +H, n = +N;
-const b = await launch();
+const b = await launch({ gl: process.env.EDGE_GL === '1' || /\/headphones\//.test(url), timeoutMs: 180000 }); // software WebGL only for 3D pages (or EDGE_GL=1)
 const { send, evalJs } = b;
 try {
   await send('Page.enable');
@@ -49,4 +50,4 @@ try {
     fs.writeFileSync(out, Buffer.from((await send('Page.captureScreenshot', { format: 'png' })).result.data, 'base64'));
     console.log(`saved ${out} (${shots.length} screens, page height ${total}px)`);
   }
-} finally { await b.close(); setTimeout(() => process.exit(0), 1200); }
+} finally { await b.close(); checkNoLeftovers(); process.exit(0); }

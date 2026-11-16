@@ -1,11 +1,11 @@
 // Headless __dbg.check() at phone width, printed as text (no window, no screenshot). Launcher: tools/edge.mjs
 // Usage: node tools/check.mjs <url> [width=375] [js-to-run-first]   e.g. node tools/check.mjs http://localhost:8080/shop/
 // Waits for __dbg.site.ready() when a site defines it (e.g. lazy 3D settling).
-import { launch, sleep } from './edge.mjs';
+import { launch, sleep, checkNoLeftovers } from './edge.mjs';
 
 const [url, W = 375, pre = ''] = process.argv.slice(2);
 let failed = true;
-const b = await launch();
+const b = await launch({ gl: process.env.EDGE_GL === '1' || /\/headphones\//.test(url), timeoutMs: 90000 }); // software WebGL only for 3D pages (or EDGE_GL=1)
 const { send, evalJs } = b;
 try {
   await send('Page.enable');
@@ -18,4 +18,4 @@ try {
   const out = await evalJs('window.__dbg ? __dbg.check() : "no __dbg (not localhost?)"');
   console.log(out);
   failed = /✗|no __dbg/.test(out);
-} finally { await b.close(); setTimeout(() => process.exit(failed ? 1 : 0), 1200); }
+} finally { await b.close(); if (!checkNoLeftovers()) failed = true; process.exit(failed ? 1 : 0); }
