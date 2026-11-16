@@ -44,6 +44,8 @@ const out = new URL('img/', root);
 fs.mkdirSync(out, { recursive: true });
 let n = 0;
 for (const c of CAFE.categories) for (const i of c.items) { fs.writeFileSync(new URL(`${i.id}.svg`, out), svg(i.id, c.icon)); n++; }
+// Items the owner adds in the demo panel (admin.html) get their category's picture: new-<category>.svg
+for (const c of CAFE.categories) { fs.writeFileSync(new URL(`new-${c.id}.svg`, out), svg('new-' + c.id, c.icon)); n++; }
 // Hero / about scenes
 fs.writeFileSync(new URL('hero.svg', out), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
 <defs><radialGradient id="l" cx="70%" cy="20%" r="80%"><stop offset="0" stop-color="#7a4a26"/><stop offset=".5" stop-color="#2a1b12"/><stop offset="1" stop-color="#0f0b08"/></radialGradient>

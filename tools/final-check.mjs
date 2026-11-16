@@ -52,6 +52,75 @@ const flows = {
     const bk=$$('.bk').find(b=>$('[data-act=done]',b)),id=bk?.dataset.id;await click($('[data-act=done]',bk),300);
     ok(Store.load().find(b=>b.id===id)?.status==='done','✓ marks booking done');
     await click($('[data-act=restore]',$('.bk[data-id="'+id+'"]')),300);ok(Store.load().find(b=>b.id===id)?.status==='booked','↺ restores it');
+    await click($('[data-sec=services]'),300);const s0=$('[data-s="0"]');ok(!!s0,'services tab');
+    type($('[data-f=price]',s0),'333000');type($('[data-f=dur]',s0),'45');await click($('#saveEdits'),400);
+    ok(/ذخیره شد/.test($('#msg').textContent),'services saved: '+$('#msg').textContent.trim());
+    let f=await __dbg.frame('index.html');ok(/۳۳۳٬۰۰۰/.test(f.document.querySelector('[data-svc="hair"]').textContent),'booking page shows the edited price');
+    await click($('[data-sec=hours]'),300);type($('.ed[data-d="0"] [data-h=open]'),'12:00');await click($('#saveEdits'),400);
+    if(/دوباره/.test($('#msg').textContent)){ok(true,'warns about bookings outside the new hours');await click($('#saveEdits'),400);}
+    ok(/ذخیره شد/.test($('#msg').textContent),'hours saved');
+    f=await __dbg.frame('index.html');const St=f.eval('Store'),sat=St.days().find((d,i)=>i>0&&(St.fromKey(d).getDay()+1)%7===0);
+    ok(St.slots(sat,30,[])[0]===720,'booking page: Saturday slots now start 12:00');
+    await click($('.ed[data-d="1"] [data-act=addBreak]'),300);type($$('.ed[data-d="1"] [data-bk="0"]').at(-1),'06:00');await click($('#saveEdits'),300);
+    ok($('#msg').classList.contains('err'),'break outside hours refused: '+$('#msg').textContent.trim());
+    await click($('#resetEdits'),150);await click($('#resetEdits'),300);ok(localStorage.getItem('barber.edits.v1')===null&&SHOP.hours[0].open==='10:00','two-tap reset restores the demo');
+    __dbg.frameClose();await click($('[data-sec=bookings]'),300);
+    await click($('#logout'),300);ok(!!$('#pw'),'logout returns to login');`,
+  // Owner panels: wrong/right password, edit → save → public page (hidden frame) shows it, bad input refused, two-tap reset, logout
+  'cafe/admin.html': `try{sessionStorage.clear()}catch{}
+    const login=async pw=>{type($('#pw'),pw);$('#lf').requestSubmit();await w(500)};
+    const saved=()=>/ذخیره شد/.test($('#msg').textContent), refused=()=>$('#msg').classList.contains('err');
+    await login('0000');ok(/اشتباه/.test($('#panel').textContent),'wrong password rejected');
+    await login('۱۲۳۴');ok(!$('#pw')&&!!$('.ad-item'),'demo pw ۱۲۳۴ logs in');
+    type($('[data-f=name]',$('.ad-item')),'لاته آزمون');type($('[data-f=price]',$('.ad-item')),'۱۲۳٬۰۰۰');
+    await click($('[data-f=soldOut]',$$('.ad-item')[1]),150);
+    await click($('#save'),400);ok(saved(),'save: '+$('#msg').textContent.trim());
+    let f=await __dbg.frame('menu.html');const m=f.document.querySelectorAll('.m-item');
+    ok(/لاته آزمون/.test(m[0].textContent)&&/۱۲۳٬۰۰۰/.test(m[0].textContent),'menu shows edited name + price');
+    ok(m[1].classList.contains('so')&&/تمام شد/.test(m[1].textContent),'menu shows «تمام شد»');
+    type($('[data-f=price]',$('.ad-item')),'-5');await click($('#save'),300);ok(refused(),'negative price refused: '+$('#msg').textContent.trim());
+    type($('[data-f=price]',$('.ad-item')),'123000');
+    const n0=$$('.ad-item').length;await click($('[data-act=add]'),300);ok($$('.ad-item').length===n0+1,'«افزودن» adds a row');
+    await click($('#save'),300);ok(refused(),'empty new item refused: '+$('#msg').textContent.trim());
+    const nw=$$('.ad-item[data-c="0"]').at(-1);type($('[data-f=name]',nw),'قهوه جدید');type($('[data-f=price]',nw),'99000');
+    const gone=$('[data-f=name]',$$('.ad-item')[2]).value;await click($('[data-act=del]',$$('.ad-item')[2]),300);
+    await click($('#save'),400);ok(saved(),'add + remove saved');
+    f=await __dbg.frame('menu.html');ok(/قهوه جدید/.test(f.document.querySelector('#hot').textContent)&&!f.document.querySelector('#hot').textContent.includes(gone),'menu shows the new item, not the removed «'+gone+'»');
+    await click($('[data-view=hours]'),300);await click($('.ad-day[data-d="6"] [data-h=on]'),150);
+    await click($('#save'),400);ok(saved(),'hours saved (Friday closed)');
+    f=await __dbg.frame('index.html');ok(/تعطیل/.test(f.document.querySelectorAll('#hoursList li')[6].textContent),'landing shows Friday closed');
+    type($('.ad-day[data-d="0"] [data-h=close]'),'5');await click($('#save'),300);ok(refused(),'close before open refused: '+$('#msg').textContent.trim());
+    await click($('#reset'),150);ok(/مطمئن/.test($('#reset').textContent),'reset asks for a second tap');await click($('#reset'),300);
+    ok(localStorage.getItem('cafe.edits.v1')===null&&/برگشت/.test($('#msg').textContent),'reset restores the demo');
+    f=await __dbg.frame('menu.html');ok(!/لاته آزمون|قهوه جدید/.test(f.document.body.textContent)&&!f.document.querySelector('.m-item.so'),'menu back to the demo');__dbg.frameClose();
+    await click($('#logout'),300);ok(!!$('#pw'),'logout returns to login');`,
+  'shop/admin.html': `try{sessionStorage.clear()}catch{}
+    const login=async pw=>{type($('#pw'),pw);$('#lf').requestSubmit();await w(500)};
+    const saved=()=>/ذخیره شد/.test($('#msg').textContent), refused=()=>$('#msg').classList.contains('err');
+    await login('1111');ok(/اشتباه/.test($('#panel').textContent),'wrong password rejected');
+    await login('1234');ok(!$('#pw')&&$$('.ad-p').length===SHOP.products.length,'demo pw 1234 logs in, '+$$('.ad-p').length+' products');
+    await click($('.ad-p summary'),300);let p=$('.ad-p[open]');ok(!!p,'product card opens');const id=SHOP.products[0].id;
+    type($('[data-f=price]',p),'500000');type($('[data-f=off]',p),'۱۰');
+    let b;while((b=$$('.ad-p[open] [data-sold][aria-pressed=false]')[0]))await click(b,120);
+    await click($('#save'),400);ok(saved(),'save: '+$('#msg').textContent.trim());
+    let f=await __dbg.frame('index.html');const c=f.document.querySelector('.card[data-id="'+id+'"]');
+    ok(/۴۵۰٬۰۰۰/.test(c.textContent)&&/۵۰۰٬۰۰۰/.test(c.textContent),'store shows −10% of 500,000 = 450,000');
+    ok(c.classList.contains('sold')&&/ناموجود/.test(c.textContent),'store marks the product sold out');
+    await click($('[data-view=ship]'),300);type($$('[data-ship]')[0],'0');type($('#freeFrom'),'1000000');
+    await click($('#save'),400);ok(saved(),'shipping saved');
+    f=await __dbg.frame('index.html');const C2=f.Cart;C2.clear();C2.add('tee-over',C2.byId['tee-over'].colors[0].name,'M',1);
+    let t=C2.totals('post');ok(t.sub===712000&&t.ship===0,'cart: post free at 0 → '+t.sub+' + '+t.ship);
+    t=C2.totals('courier');ok(t.ship===120000&&t.total===832000,'cart: courier unchanged → total '+t.total);
+    ok(/۱ میلیون/.test(f.document.querySelector('#freeShipPill').textContent),'store pill: '+f.document.querySelector('#freeShipPill').textContent);
+    type($('#freeFrom'),'-1');await click($('#save'),300);ok(refused(),'negative threshold refused: '+$('#msg').textContent.trim());type($('#freeFrom'),'1000000');
+    await click($('[data-view=products]'),300);await click($('[data-act=addProduct]'),300);p=$('.ad-p[open]');
+    await click($('#save'),300);ok(refused(),'empty new product refused: '+$('#msg').textContent.trim());
+    type($('[data-f=name]',p),'محصول تازه');type($('[data-f=price]',p),'250000');
+    const lastSum=$$('.ad-p summary').at(-1),lastId=SHOP.products.at(-1).id;await click(lastSum,300);await click($('[data-act=delProduct]',lastSum.parentElement),300);
+    await click($('#save'),400);ok(saved(),'add + remove product saved');
+    f=await __dbg.frame('index.html');ok(/محصول تازه/.test(f.document.querySelector('#grid').textContent)&&!f.document.querySelector('.card[data-id="'+lastId+'"]'),'store shows the new product, not the removed '+lastId);
+    await click($('#reset'),150);await click($('#reset'),300);ok(localStorage.getItem('shop.edits.v1')===null&&/برگشت/.test($('#msg').textContent),'two-tap reset restores the demo');
+    f=await __dbg.frame('index.html');ok(f.document.querySelectorAll('.card').length===ShopEdits.defaults().products.length&&!f.document.querySelector('.card.sold'),'store back to the demo');__dbg.frameClose();
     await click($('#logout'),300);ok(!!$('#pw'),'logout returns to login');`,
   'shop/': `await demoSweep();
     await click($('[data-open]'),500);const sizes=$$('[data-size]').filter(b=>!b.disabled);ok(sizes.length>0,'product sheet sizes '+sizes.length);
@@ -78,7 +147,7 @@ const flows = {
     await click($$('[data-color]')[1],400);ok(/hp-/.test(p.src)&&p.src.includes(H.color().id),'poster follows colour');`,
 };
 
-const pages = ['', 'cafe/', 'cafe/menu.html', 'gym/', 'barber/', 'barber/admin.html', 'shop/', 'headphones/', 'headphones/?poster'].filter(p => p.includes(only));
+const pages = ['', 'cafe/', 'cafe/menu.html', 'cafe/admin.html', 'gym/', 'barber/', 'barber/admin.html', 'shop/', 'shop/admin.html', 'headphones/', 'headphones/?poster'].filter(p => p.includes(only));
 let bad = 0;
 const runGroup = async (list, gl) => {
   if (!list.length) return;

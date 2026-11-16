@@ -4,6 +4,7 @@ const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const faNum = n => Number(n).toLocaleString('fa-IR');
 const toman = n => `${faNum(n)} <small>تومان</small>`;
 const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+const imgOf = p => p.img || `img/${p.id}.svg`; // products added in the owner panel reuse a picture of their category
 
 function toast(msg) {
   let t = document.getElementById('toast');
@@ -19,7 +20,8 @@ function toast(msg) {
   // ----- static bits -----
   $('#logoName').textContent = S.title;
   $('#tagline').textContent = S.tagline;
-  $('#freeShipPill').textContent = `ارسال رایگان برای خرید بالای ${faNum(S.freeShipFrom / 1e6)} میلیون`;
+  $('#freeShipPill').textContent = !S.freeShipFrom ? 'ارسال پستی رایگان برای همه‌ی خریدها'
+    : `ارسال رایگان برای خرید بالای ${S.freeShipFrom >= 1e6 ? `${faNum(S.freeShipFrom / 1e6)} میلیون` : `${faNum(S.freeShipFrom)} تومان`}`;
   $('#perks').innerHTML = S.perks.map(([i, t]) => `<li><span>${i}</span>${t}</li>`).join('');
   $('#copy').textContent = `© ۱۴۰۵ ${S.title} · طراحی توسط Dreeix`;
 
@@ -50,10 +52,10 @@ function toast(msg) {
   function renderGrid() {
     const list = S.products.filter(matches).sort(sorters[state.sort]);
     $('#grid').innerHTML = list.map(p => `
-      <article class="card" data-id="${p.id}">
+      <article class="card${C.soldOutAll(p) ? ' sold' : ''}" data-id="${p.id}">
         <button class="card-img" data-open="${p.id}" aria-label="${p.name}">
-          <img src="img/${p.id}.svg" alt="${p.name}" width="300" height="375" loading="lazy">
-          ${p.off ? `<span class="tag off">٪${faNum(p.off * 100)}−</span>` : p.isNew ? '<span class="tag">جدید</span>' : ''}
+          <img src="${imgOf(p)}" alt="${p.name}" width="300" height="375" loading="lazy">
+          ${C.soldOutAll(p) ? '<span class="tag out">ناموجود</span>' : p.off ? `<span class="tag off">٪${faNum(p.off * 100)}−</span>` : p.isNew ? '<span class="tag">جدید</span>' : ''}
         </button>
         <div class="card-txt">
           <h3><button data-open="${p.id}">${p.name}</button></h3>
@@ -96,7 +98,7 @@ function toast(msg) {
     const hasGuide = sizes.some(s => S.sizeGuide.some(g => g[0] === s));
     show('product', `
       <div class="pd">
-        <img src="img/${p.id}.svg" alt="${p.name}" width="300" height="375">
+        <img src="${imgOf(p)}" alt="${p.name}" width="300" height="375">
         <div>
           <span class="muted">${catName[p.cat]}</span>
           <h3>${p.name}</h3>
@@ -111,7 +113,7 @@ function toast(msg) {
       <div class="sizes">${sizes.map(s => `<button data-size="${s}" aria-pressed="${s === sel.size}" ${C.inStock(p, s) ? '' : 'disabled title="ناموجود"'}>${s}</button>`).join('')}</div>
       ${hasGuide ? `<details class="guide"><summary>راهنمای سایز</summary><table><tr><th>سایز</th><th>دور سینه (سانتی‌متر)</th></tr>${S.sizeGuide.filter(g => sizes.includes(g[0])).map(g => `<tr><td>${g[0]}</td><td>${g[1]}</td></tr>`).join('')}</table></details>` : ''}
       <p class="err" id="addErr" role="alert"></p>
-      <button class="btn btn-main wide" id="addBtn">افزودن به سبد خرید</button>`, p.name);
+      <button class="btn btn-main wide" id="addBtn"${C.soldOutAll(p) ? ' disabled' : ''}>${C.soldOutAll(p) ? 'فعلاً ناموجود' : 'افزودن به سبد خرید'}</button>`, p.name);
     $('.swatches', body).onclick = e => { const b = e.target.closest('[data-color]'); if (!b) return; sel.color = b.dataset.color; $$('[data-color]', body).forEach(x => x.setAttribute('aria-pressed', x === b)); $('#colorLbl').textContent = sel.color; };
     $('.sizes', body).onclick = e => { const b = e.target.closest('[data-size]'); if (!b || b.disabled) return; sel.size = b.dataset.size; $$('[data-size]', body).forEach(x => x.setAttribute('aria-pressed', x === b)); $('#addErr').textContent = ''; };
     $('#addBtn').onclick = () => {
@@ -131,7 +133,7 @@ function toast(msg) {
       ${t.toFree ? `<div class="ship-bar"><p>${toman(t.toFree)} تا ارسال رایگان</p><i style="--k:${Math.min(1, t.sub / S.freeShipFrom)}"></i></div>` : '<div class="ship-bar ok"><p>🎉 ارسال پستی رایگان شد</p></div>'}
       <ul class="lines">${ls.map(l => { const k = C.keyOf(l); return `
         <li data-key="${esc(k)}">
-          <img src="img/${l.id}.svg" alt="" width="64" height="80">
+          <img src="${imgOf(l.p)}" alt="" width="64" height="80">
           <div><b>${l.p.name}</b><span class="muted">${l.color} · ${l.size}</span><span class="price">${toman(C.priceOf(l.p) * l.qty)}</span></div>
           <div class="qty"><button data-q="1" aria-label="یکی بیشتر" ${l.qty >= S.maxQty ? 'disabled' : ''}>+</button><output>${faNum(l.qty)}</output><button data-q="-1" aria-label="یکی کمتر">${l.qty > 1 ? '−' : '🗑'}</button></div>
         </li>`; }).join('')}</ul>
@@ -174,7 +176,7 @@ function toast(msg) {
   }
   function renderSum() {
     const t = C.totals(form.ship);
-    S.shipping.forEach(m => { const el = $(`[data-ship-price="${m.id}"]`, body); if (el) el.innerHTML = m.free && t.sub >= S.freeShipFrom ? 'رایگان' : toman(m.price); });
+    S.shipping.forEach(m => { const el = $(`[data-ship-price="${m.id}"]`, body); if (el) el.innerHTML = !m.price || (m.free && t.sub >= S.freeShipFrom) ? 'رایگان' : toman(m.price); });
     const sum = $('#coSum'); if (!sum) return;
     sum.innerHTML = `<dt>جمع کالاها</dt><dd>${toman(t.sub)}</dd><dt>هزینه‌ی ارسال</dt><dd>${t.ship ? toman(t.ship) : 'رایگان'}</dd><dt class="tot">مبلغ قابل پرداخت</dt><dd class="tot">${toman(t.total)}</dd>`;
   }

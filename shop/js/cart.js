@@ -1,7 +1,9 @@
 // Shop logic without UI: prices, cart in localStorage, totals, checkout validation, demo orders.
 window.Cart = (() => {
   const S = SHOP, KEY = 'shop.cart', OKEY = 'shop.orders';
-  const byId = Object.fromEntries(S.products.map(p => [p.id, p]));
+  // Looked up on every call: the owner panel (edits.js) may replace SHOP.products while the page is open
+  let index = null, indexed = null;
+  const ids = () => { if (indexed !== S.products) { indexed = S.products; index = Object.fromEntries(S.products.map(p => [p.id, p])); } return index; };
   const read = k => { try { return JSON.parse(localStorage.getItem(k)) || []; } catch { return []; } };
   const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
   const listeners = [];
@@ -10,16 +12,17 @@ window.Cart = (() => {
   // Discounted price, rounded to 1000 toman
   const priceOf = p => p.off ? Math.round(p.price * (1 - p.off) / 1000) * 1000 : p.price;
   const inStock = (p, size) => p.sizes.includes(size) && !(p.soldOut || []).includes(size);
+  const soldOutAll = p => !p.sizes.some(s => inStock(p, s));
   const keyOf = l => `${l.id}|${l.color}|${l.size}`;
 
   // Only lines whose product/color/size still exist (data.js may change between visits)
-  const lines = () => read(KEY).filter(l => byId[l.id] && byId[l.id].colors.some(c => c.name === l.color) && inStock(byId[l.id], l.size) && l.qty > 0)
-    .map(l => ({ ...l, qty: Math.min(l.qty, S.maxQty), p: byId[l.id] }));
+  const lines = () => { const byId = ids(); return read(KEY).filter(l => byId[l.id] && byId[l.id].colors.some(c => c.name === l.color) && inStock(byId[l.id], l.size) && l.qty > 0)
+    .map(l => ({ ...l, qty: Math.min(l.qty, S.maxQty), p: byId[l.id] })); };
   const save = ls => { write(KEY, ls.map(({ id, color, size, qty }) => ({ id, color, size, qty }))); changed(); };
 
   /** Add item; returns '' on success or an error message */
   function add(id, color, size, qty = 1) {
-    const p = byId[id];
+    const p = ids()[id];
     if (!p) return 'محصول پیدا نشد';
     if (!p.colors.some(c => c.name === color)) return 'رنگ را انتخاب کنید';
     if (!p.sizes.includes(size)) return 'سایز را انتخاب کنید';
@@ -73,5 +76,5 @@ window.Cart = (() => {
   const orders = () => read(OKEY);
   const deleteOrder = no => write(OKEY, orders().filter(o => o.no !== no));
 
-  return { byId, priceOf, inStock, keyOf, lines, add, setQty, remove, clear, count, totals, validate, placeOrder, orders, deleteOrder, norm, onChange: f => listeners.push(f), KEY, OKEY };
+  return { get byId() { return ids(); }, priceOf, inStock, soldOutAll, keyOf, lines, add, setQty, remove, clear, count, totals, validate, placeOrder, orders, deleteOrder, norm, onChange: f => listeners.push(f), KEY, OKEY };
 })();

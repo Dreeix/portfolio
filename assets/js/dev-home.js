@@ -67,7 +67,7 @@ window.__dbg.site = {
   ],
   // fetches every project page/extra link and reports non-200s
   async checkLinks() {
-    const urls = ME.projects.flatMap(p => [p.url, p.thumb, p.extra?.url].filter(Boolean)), bad = [];
+    const urls = ME.projects.flatMap(p => [p.url, p.thumb, ...[].concat(p.extra || []).map(x => x.url)].filter(Boolean)), bad = [];
     await Promise.all(urls.map(async u => { try { const r = await fetch(u, { method: 'HEAD' }); if (!r.ok) bad.push(`${r.status} ${u}`); } catch (e) { bad.push(`fail ${u}`); } }));
     return bad;
   },

@@ -21,8 +21,11 @@ function openStatus() {
   if (yest && yest.close > 24 && hour < yest.close - 24) return { open: true, text: `باز است · تا ساعت ${faHour(yest.close)}`, today: day };
   if (today && hour >= today.open && hour < today.close) return { open: true, text: `باز است · تا ساعت ${faHour(today.close)}`, today: day };
   if (today && hour < today.open) return { open: false, text: `بسته است · امروز از ساعت ${faHour(today.open)}`, today: day };
-  const next = H.find(h => h.day === (day + 1) % 7);
-  return { open: false, text: `بسته است · فردا از ساعت ${faHour(next.open)}`, today: day };
+  for (let k = 1; k <= 7; k++) { // next open day (the panel may close whole days)
+    const n = H.find(h => h.day === (day + k) % 7);
+    if (n) return { open: false, text: `بسته است · ${k === 1 ? 'فردا' : CAFE.dayNames[n.day]} از ساعت ${faHour(n.open)}`, today: day };
+  }
+  return { open: false, text: 'بسته است', today: day };
 }
 
 function renderStatus() {

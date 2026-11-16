@@ -11,6 +11,103 @@
     return `${S.date} ${fmtTime(S.start)}`;
   }
 
+  // ---- owner panel edits (edits.js): services + weekly hours ----
+  const E = BarberEdits;
+  const ownerSandbox = fn => __dbg.keepStorage(fn).finally(() => { E.reload(); (B || A)?.render(); });
+  // Sample: hair renamed, 333,000 and 45 min; Saturday 12:00–16:00 with a 13:00–13:30 break; Friday open 10:00–14:00
+  function sample() {
+    const v = E.defaults(), hair = v.services.find(s => s.id === 'hair');
+    Object.assign(hair, { name: 'آزمون پنل', price: 333000, dur: 45 });
+    v.hours[0] = { open: '12:00', close: '16:00', breaks: [['13:00', '13:30']] };
+    v.hours[6] = { open: '10:00', close: '14:00', breaks: [] };
+    return v;
+  }
+  const dayOf = (idx, skipToday = true) => Store.days().find((k, i) => (!skipToday || i > 0) && (Store.fromKey(k).getDay() + 1) % 7 === idx);
+  const ownerChecks = [
+    function ownerValidation() {
+      const bad = [], base = () => E.defaults(), s0 = v => v.services[0], h0 = v => v.hours[0];
+      if (E.check(base())) bad.push('defaults rejected: ' + E.check(base()));
+      const cases = {
+        'empty name': v => { s0(v).name = ''; }, 'negative price': v => { s0(v).price = -10000; }, 'absurd price': v => { s0(v).price = 9e10; },
+        'price not x1000': v => { s0(v).price = 350500; }, 'duration 10': v => { s0(v).dur = 10; }, 'duration 17': v => { s0(v).dur = 17; },
+        'html in name': v => { s0(v).name = '<b>'; }, 'close before open': v => { h0(v).close = '09:00'; }, 'open 25:00': v => { h0(v).open = '25:00'; },
+        'odd minutes': v => { h0(v).open = '10:10'; }, 'break outside hours': v => { h0(v).breaks = [['21:00', '22:00']]; },
+        'break ends before start': v => { h0(v).breaks = [['15:00', '14:00']]; }, 'overlapping breaks': v => { h0(v).breaks = [['13:00', '14:00'], ['13:30', '14:30']]; },
+        'break at opening': v => { h0(v).breaks = [['10:00', '10:30']]; }, 'all days closed': v => { v.hours = v.hours.map(() => null); },
+        'unknown service id': v => { s0(v).id = 'zz'; }, 'six days only': v => { v.hours.pop(); },
+      };
+      for (const [k, f] of Object.entries(cases)) { const v = base(); f(v); if (!E.check(v)) bad.push(`accepted: ${k}`); }
+      return bad;
+    },
+    async function slotsAfterEdit() { // slots follow edited hours/breaks/durations; no double booking; reset restores
+      const bad = [];
+      await ownerSandbox(async () => {
+        const err = E.save(sample()); if (err) return bad.push('sample rejected: ' + err);
+        const sat = dayOf(0), fri = dayOf(6);
+        const s = Store.slots(sat, 45, []);
+        if (s[0] !== 12 * 60) bad.push(`Saturday first slot ${fmtTime(s[0])}, expected 12:00`);
+        if (s.some(t => t < 12 * 60 || t + 45 > 16 * 60)) bad.push('Saturday slot outside 12:00–16:00');
+        if (s.some(t => t < 13.5 * 60 && 13 * 60 < t + 45)) bad.push('Saturday slot overlaps the 13:00 break');
+        if (!fri || !Store.slots(fri, 30, []).length) bad.push('Friday opened but has no slots');
+        if (service('hair').dur !== 45 || service('hair').price !== 333000) bad.push('service edit not applied');
+        const r1 = Store.add({ service: 'hair', date: sat, start: s[0], name: 'الف', phone: '09000000000' });
+        const r2 = Store.add({ service: 'hair', date: sat, start: s[0], name: 'ب', phone: '09000000001' });
+        const r3 = Store.add({ service: 'hair', date: sat, start: 10 * 60, name: 'ج', phone: '09000000002' });
+        if (!r1.ok) bad.push('booking in edited hours failed: ' + r1.error);
+        else if (r1.booking.dur !== 45 || r1.booking.price !== 333000) bad.push('booking does not use edited duration/price');
+        if (r2.ok) bad.push('double booking accepted after edit');
+        if (r3.ok) bad.push('booking before the new opening time accepted');
+        if (Store.slots(sat, 45).includes(s[0] + 30)) bad.push('slot overlapping the new 45-min booking offered');
+        E.reset();
+        const d = Store.slots(sat, 30, []);
+        if (d[0] !== 10 * 60 || Store.slots(fri, 30, []).length) bad.push('reset did not restore default hours');
+      });
+      return bad;
+    },
+    async function editShowsOnPublic() {
+      const bad = [];
+      await ownerSandbox(async () => {
+        E.save(sample());
+        const w = await __dbg.frame('index.html'), svc = w.document.querySelector('[data-svc="hair"]');
+        if (!/آزمون پنل/.test(svc?.textContent) || !/۳۳۳٬۰۰۰/.test(svc?.textContent)) bad.push('booking page: edited service name/price not shown');
+        const fri = dayOf(6); if (!w.eval('Store').slots(fri, 30, []).length) bad.push('booking page: Friday still closed');
+      });
+      return bad;
+    },
+    async function resetRestoresDefaults() {
+      const bad = [];
+      await ownerSandbox(async () => {
+        E.save(sample()); E.reset();
+        if (localStorage.getItem(E.key) !== null) bad.push('key still in storage after reset');
+        if (JSON.stringify(E.current()) !== JSON.stringify(E.defaults())) bad.push('data differs from defaults after reset');
+        const w = await __dbg.frame('index.html');
+        if (!w.document.querySelector('[data-svc="hair"]')?.textContent.includes(E.defaults().services[0].name)) bad.push('booking page after reset is not the demo');
+      });
+      return bad;
+    },
+    async function corruptFallsBack() {
+      const bad = [], n = E.defaults().services.length;
+      const junk = ['{oops', '7', '{"services":[],"hours":[]}', JSON.stringify({ ...sample(), hours: sample().hours.map(() => null) }),
+        JSON.stringify((v => { v.hours[1] = { open: '12:00', close: '10:00', breaks: [] }; return v; })(sample()))];
+      await ownerSandbox(async () => {
+        for (const j of junk) {
+          localStorage.setItem(E.key, j); E.reload();
+          if (JSON.stringify(E.current()) !== JSON.stringify(E.defaults()) || !E.corrupt()) bad.push(`not ignored: ${j.slice(0, 40)}`);
+        }
+        localStorage.setItem(E.key, '{oops');
+        const w = await __dbg.frame('index.html'), m = w.document.querySelectorAll('[data-svc]').length;
+        if (m !== n) bad.push(`booking page with corrupt storage shows ${m}/${n} services`);
+      });
+      return bad;
+    },
+  ];
+  const ownerActions = {
+    'Owner edits: sample (hair 45 min/333k, Sat 12–16 + break, Fri open)': () => E.save(sample()) || 'saved → reload the booking page',
+    'Owner edits: reset to demo': () => { E.reset(); (B || A).render(); return 'reset'; },
+    'Owner edits: write corrupt JSON': () => { localStorage.setItem(E.key, '{oops'); E.reload(); return 'corrupt saved → defaults should show'; },
+    ...(A ? { 'Panel: services': () => A.setSec('services'), 'Panel: hours': () => A.setSec('hours'), 'Panel: bookings': () => A.setSec('bookings') } : {}),
+  };
+
   window.__dbg.site = {
     name: 'barber',
     actions: {
@@ -24,8 +121,10 @@
       'Reseed demo bookings': () => { Store.seedDemo(true); (B || A).render(); return `${Store.load().length} bookings`; },
       'Clear all bookings': () => { Store.save([]); (B || A).render(); return 'cleared'; },
       'Time: now real': () => { window.__now = null; (B || A).render(); },
+      ...ownerActions,
     },
     checks: [
+      ...ownerChecks,
       function barTextOnSolid() { // sticky bar: only its top padding may fade, never under the hint/button text (bug: hint overlapped cards)
         const bar = document.querySelector(".bar"), t = bar?.querySelector(".hint"); if (!bar) return []; if (!t) return ["no .hint in .bar"];
         const fade = parseFloat(getComputedStyle(bar).getPropertyValue("--fade")), gap = t.getBoundingClientRect().top - bar.getBoundingClientRect().top;
@@ -39,8 +138,9 @@
         }
         return bad;
       },
-      function bookingsInsideHours() {
-        return Store.load().filter(b => b.status !== 'cancelled').flatMap(b => {
+      function bookingsInsideHours() { // bookings made before the owner's last hours edit may sit outside (they keep their time, admin tags them)
+        const since = E.savedAt();
+        return Store.load().filter(b => b.status !== 'cancelled' && !(b.created < since)).flatMap(b => {
           const h = Store.hoursFor(b.date);
           if (!h) return [`booking on closed day ${b.date}`];
           if (b.start < toMin(h.open) || b.start + b.dur > toMin(h.close)) return [`outside hours ${b.date} ${fmtTime(b.start)}`];

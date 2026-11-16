@@ -24,6 +24,9 @@ window.CAFE = {
     { day: 5, open: 9, close: 24 },
     { day: 6, open: 9, close: 24 },
   ],
+  // Owner panel (admin.html) password, SHA-256. Demo password: 1234 (shown on the login page while demo is true).
+  // Client-side only: keeps casual visitors out, not real security. Edits stay in the visitor's own browser.
+  adminHash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
   dayNames: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'],
   categories: [
     { id: 'hot', name: 'قهوه‌ی گرم', icon: 'cup', items: [

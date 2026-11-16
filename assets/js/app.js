@@ -14,7 +14,7 @@
         <ul class="tags">${p.tags.map(t => `<li>${t}</li>`).join('')}</ul>
         <div class="acts">
           <a class="btn btn-main" href="${p.url}">مشاهده سایت</a>
-          ${p.extra ? `<a class="btn btn-line" href="${p.extra.url}">${p.extra.label}</a>` : ''}
+          ${[].concat(p.extra || []).map(x => `<a class="btn btn-line" href="${x.url}">${x.label}</a>`).join('')}
         </div>
       </div>
     </article>`).join('');

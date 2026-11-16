@@ -47,17 +47,38 @@
 
   const dbg = window.__dbg = {
     site: window.__dbg?.site || null,
-    /** Run all checks; returns text report */
+    /** Run all checks; returns the text report (a Promise when a site check is async; they run one after another) */
     check() {
-      const out = [];
       const all = { ...coreChecks };
       (dbg.site?.checks || []).forEach((fn, i) => all[`site${i}:${fn.name || ''}`] = fn);
+      const NL = String.fromCharCode(10), line = (k, r) => r.length ? `✗ ${k}${NL}  - ${r.join(NL + '  - ')}` : `✓ ${k}`;
+      const out = [], pending = [], isAsync = fn => fn.constructor.name === 'AsyncFunction';
       for (const [k, fn] of Object.entries(all)) {
+        if (isAsync(fn)) { pending.push([out.length, k, fn]); out.push(null); continue; } // run later, one at a time
         let r; try { r = fn() || []; } catch (e) { r = [`check crashed: ${e.message}`]; }
-        out.push(r.length ? `✗ ${k}\n  - ${r.join('\n  - ')}` : `✓ ${k}`);
+        out.push(line(k, r));
       }
-      return out.join('\n');
+      if (!pending.length) return out.join(NL);
+      return (async () => { // async checks one after another (they share localStorage)
+        await new Promise(r => setTimeout(r, 500)); // let a history.back() from a sync check (closing a sheet) land first
+        for (const [i, k, fn] of pending) { let r; try { r = (await fn()) || []; } catch (e) { r = [`check crashed: ${e.message}`]; } out[i] = line(k, r); }
+        dbg.frameClose(); return out.join(NL);
+      })();
     },
+    /** Snapshot localStorage, run fn (sync or async), always restore it exactly afterwards */
+    async keepStorage(fn) {
+      const snap = JSON.stringify(localStorage);
+      try { return await fn(); } finally { localStorage.clear(); Object.entries(JSON.parse(snap)).forEach(([k, v]) => localStorage.setItem(k, v)); }
+    },
+    /** Load a same-origin page in a hidden 375px iframe; resolves its window once loaded (+ its own dev layer). Close with dbg.frameClose() */
+    frame(url, waitMs = 400) {
+      dbg.frameClose();
+      const f = document.createElement('iframe'); f.id = 'dbgFrame'; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1;
+      f.style.cssText = 'position:fixed;left:-10000px;top:0;width:375px;height:812px;border:0;visibility:hidden';
+      return new Promise((ok, no) => { const t = setTimeout(() => no(new Error('frame timeout ' + url)), 15000);
+        f.onload = () => setTimeout(() => { clearTimeout(t); ok(f.contentWindow); }, waitMs); f.src = url; document.body.append(f); });
+    },
+    frameClose() { document.getElementById('dbgFrame')?.remove(); },
     jump: id => document.getElementById(id)?.scrollIntoView({ behavior: 'instant' }),
     sections: () => [...document.querySelectorAll('section[id],[data-dbg-jump]')].map(s => s.id),
     outline(on = !document.body.classList.contains('dbg-outline')) { document.body.classList.toggle('dbg-outline', on); return on; },
@@ -79,11 +100,11 @@
     panel = document.createElement('div'); panel.id = 'dbg';
     const s = dbg.site;
     const btn = (label, fn) => `<button data-a="${label}">${label}</button>`;
-    const acts = { 'Run checks': () => show(dbg.check()), Outline: () => dbg.outline(), 'Slow-mo': () => dbg.slow(), 'Reveal all': () => dbg.reveal(), 'Reset storage': () => show(dbg.clearStorage()), ...(s?.actions || {}) };
+    const acts = { 'Run checks': () => { const r = dbg.check(); if (typeof r === 'string') show(r); else { show('running…'); r.then(show); } }, Outline: () => dbg.outline(), 'Slow-mo': () => dbg.slow(), 'Reveal all': () => dbg.reveal(), 'Reset storage': () => show(dbg.clearStorage()), ...(s?.actions || {}) };
     panel.innerHTML = `<b>DEV · ${s?.name || location.pathname}</b> <small>(Ctrl+Shift+D)</small>
       <h4>Tools</h4>${Object.keys(acts).map(k => btn(k)).join('')}
       <h4>Jump</h4>${dbg.sections().map(id => `<button data-j="${id}">${id}</button>`).join('')}<pre id="dbgOut">ready</pre>`;
-    panel.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.j) dbg.jump(b.dataset.j); else { const r = acts[b.dataset.a](); if (typeof r === 'string') show(r); } };
+    panel.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.j) dbg.jump(b.dataset.j); else { const r = acts[b.dataset.a](); if (typeof r === 'string') show(r); else if (r?.then) r.then(v => typeof v === 'string' && show(v)); } };
     document.body.append(panel);
   }
   const show = t => { panel.querySelector('#dbgOut').textContent = t; };

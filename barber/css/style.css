@@ -130,3 +130,6 @@ button{cursor:pointer;border:0;background:none}
 .row .btn{padding:11px;font-size:14px}
 
 @media (min-width:760px){.panel{padding:30px 32px}.svcs{grid-template-columns:1fr 1fr}}
+
+.ftr .owner{display:inline-block;margin-top:6px;padding:6px 8px;border-bottom:1px dashed var(--line)}
+.ftr .owner:hover{color:var(--ink)}

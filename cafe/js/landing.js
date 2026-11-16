@@ -3,7 +3,7 @@
   const C = CAFE;
   const all = C.categories.flatMap(c => c.items);
 
-  $('#featuredGrid').innerHTML = all.filter(i => i.tag === 'محبوب').slice(0, 4).map(i => `
+  $('#featuredGrid').innerHTML = all.filter(i => i.tag === 'محبوب' && !i.soldOut).slice(0, 4).map(i => `
     <a class="card rv" href="menu.html#${i.cat}">
       <div class="card-img"><img src="${i.img}" alt="${i.name}" width="400" height="300" loading="lazy" decoding="async"><span class="tag">${i.tag}</span></div>
       <div class="card-body"><h3>${i.name}</h3><p>${i.desc}</p><div class="price">${priceHTML(i.price)}</div></div>
@@ -11,7 +11,8 @@
 
   const st = renderStatus();
   setInterval(renderStatus, 60000);
-  $('#hoursList').innerHTML = C.hours.map(h => `<li class="${h.day === st.today ? 'today' : ''}"><span>${C.dayNames[h.day]}</span><span class="num">${faHour(h.open)} تا ${faHour(h.close)}</span></li>`).join('');
+  $('#hoursList').innerHTML = C.dayNames.map((n, d) => { const h = C.hours.find(x => x.day === d);
+    return `<li class="${d === st.today ? 'today' : ''}${h ? '' : ' off'}"><span>${n}</span><span class="num">${h ? `${faHour(h.open)} تا ${faHour(h.close)}` : 'تعطیل'}</span></li>`; }).join('');
 
   $('#addr').textContent = C.address;
   $('#phone').textContent = C.phone.replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);

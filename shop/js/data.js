@@ -9,6 +9,9 @@ window.SHOP = {
   instagram: '',      // e.g. 'https://instagram.com/<client>'
   telegram: '',       // client's username without @
   whatsapp: '',       // international format without + (e.g. 98912xxxxxxx)
+  // Owner panel (admin.html) password, SHA-256. Demo password: 1234 (shown on the login page while demo is true).
+  // Client-side only: keeps casual visitors out, not real security. Edits stay in the visitor's own browser.
+  adminHash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
   freeShipFrom: 3000000,          // free post shipping when the cart subtotal reaches this
   maxQty: 10,                     // per cart line
   shipping: [

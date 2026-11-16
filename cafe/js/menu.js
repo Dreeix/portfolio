@@ -9,9 +9,9 @@
     <section class="m-cat" id="${c.id}">
       <h2>${c.name}${c.note ? `<small>${c.note}</small>` : ''}</h2>
       ${c.items.map(i => `
-      <button class="m-item" data-id="${i.id}" data-search="${i.name} ${i.desc}">
+      <button class="m-item${i.soldOut ? ' so' : ''}" data-id="${i.id}" data-search="${i.name} ${i.desc}">
         <img src="${i.img}" alt="${i.name}" width="84" height="84" loading="lazy" decoding="async">
-        <div class="t"><h3>${i.name}${i.tag ? `<em>${i.tag}</em>` : ''}</h3><p>${i.desc}</p><div class="price">${priceHTML(i.price)}</div></div>
+        <div class="t"><h3>${i.name}${i.soldOut ? '<em class="out">تمام شد</em>' : i.tag ? `<em>${i.tag}</em>` : ''}</h3><p>${i.desc}</p><div class="price">${priceHTML(i.price)}</div></div>
       </button>`).join('')}
     </section>`).join('');
 
@@ -47,7 +47,7 @@
   const sheet = $('#sheet'), bg = $('#sheetBg');
   function open(i) {
     $('#sheetImg').src = i.img; $('#sheetImg').alt = i.name;
-    $('#sheetTitle').textContent = i.name; $('#sheetDesc').textContent = i.desc; $('#sheetPrice').innerHTML = priceHTML(i.price);
+    $('#sheetTitle').textContent = i.name; $('#sheetDesc').textContent = i.desc; $('#sheetPrice').innerHTML = priceHTML(i.price) + (i.soldOut ? '<em class="out">فعلاً تمام شده</em>' : '');
     sheet.classList.add('on'); bg.classList.add('on'); document.body.style.overflow = 'hidden'; $('#sheetX').focus();
   }
   const close = () => { sheet.classList.remove('on'); bg.classList.remove('on'); document.body.style.overflow = ''; };

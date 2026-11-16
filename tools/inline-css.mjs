@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PAGES = ['index.html', 'cafe/index.html', 'cafe/menu.html', 'gym/index.html', 'barber/index.html', 'barber/admin.html', 'shop/index.html'];
+const PAGES = ['index.html', 'cafe/index.html', 'cafe/menu.html', 'cafe/admin.html', 'gym/index.html', 'barber/index.html', 'barber/admin.html', 'shop/index.html', 'shop/admin.html'];
 // FNV-1a over the CSS text (CRLF → LF); dev.js computes the same to spot a stale copy
 export const hash = t => { let h = 0x811c9dc5; for (const c of t.replace(/\r\n/g, '\n')) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(36); };
 
