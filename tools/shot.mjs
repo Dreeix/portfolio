@@ -1,4 +1,5 @@
 // Offscreen screenshots via headless Edge + DevTools protocol (no window opens).
+// Thumbnails: SHOT_DPR=2 node tools/shot.mjs <url> out.webp 375 760 1   (single screen, webp/jpg, quality 72)
 // Usage: node tools/shot.mjs <url> <out.png> [width=375] [height=812] [screens=6] [js-to-run-before]
 // Produces one contact sheet: `screens` consecutive viewports side by side (phone emulation, real 375px layout).
 import { spawn } from 'node:child_process';
@@ -25,7 +26,7 @@ try {
   await new Promise(r => ws.onopen = r);
   ws.onmessage = m => { const d = JSON.parse(m.data); if (pending.has(d.id)) { pending.get(d.id)(d); pending.delete(d.id); } };
   await send('Page.enable');
-  await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: true });
+  await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: +(process.env.SHOT_DPR || 1), mobile: true });
   await send('Page.navigate', { url });
   await sleep(2500);
   if (pre) console.log('pre:', await evalJs(pre));
@@ -44,6 +45,15 @@ try {
     shots.push((await send('Page.captureScreenshot', { format: 'png' })).result.data);
     if (y >= total - h) break;
   }
+  // Single screen → save directly (format from extension: .png / .jpg / .webp; SHOT_DPR=2 for retina thumbs)
+  const ext = path.extname(out).slice(1).replace('jpg', 'jpeg');
+  if (shots.length === 1 && ext !== 'png') {
+    await evalJs('1');
+    const fmt = { format: ext, quality: 72 };
+    const last = states ? `(async()=>{})()` : `scrollTo(0,0)`; await evalJs(last); await sleep(300);
+    fs.writeFileSync(out, Buffer.from((await send('Page.captureScreenshot', fmt)).result.data, 'base64'));
+    console.log(`saved ${out} (${fs.statSync(out).size >> 10} KB)`);
+  } else {
   // Stitch side by side using the browser itself
   const html = `<body style="margin:0;background:#666;display:flex;gap:6px">${shots.map(s => `<img src="data:image/png;base64,${s}">`).join('')}</body>`;
   await send('Emulation.setDeviceMetricsOverride', { width: shots.length * (w + 6), height: h, deviceScaleFactor: 1, mobile: false });
@@ -51,4 +61,5 @@ try {
   await sleep(800);
   fs.writeFileSync(out, Buffer.from((await send('Page.captureScreenshot', { format: 'png' })).result.data, 'base64'));
   console.log(`saved ${out} (${shots.length} screens, page height ${total}px)`);
+  }
 } finally { proc.kill(); setTimeout(() => { try { fs.rmSync(prof, { recursive: true, force: true, maxRetries: 3 }); } catch {} }, 1500); setTimeout(() => process.exit(0), 2000); }
