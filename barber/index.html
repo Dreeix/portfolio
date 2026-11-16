@@ -7,7 +7,7 @@
 <meta name="description" content="نوبت آرایشگاه را آنلاین رزرو کنید: انتخاب خدمت، روز و ساعت، بدون تماس و انتظار.">
 <meta name="theme-color" content="#16181d">
 <link rel="preload" href="fonts/Vazirmatn.woff2" as="font" type="font/woff2" crossorigin>
-<style data-src="css/style.css" data-hash="3glsfg">
+<style data-src="css/style.css" data-hash="184z0vv">
 @font-face{font-family:Vazirmatn;src:url(fonts/Vazirmatn.woff2) format('woff2');font-weight:100 900;font-display:swap}
 :root{--bg:#f5f4f0;--card:#fff;--ink:#16181d;--muted:#6b6f76;--line:#e6e4de;--acc:#0f766e;--acc2:#e6f2f0;--warn:#b42318;--r:16px;--max:720px;--pad:16px;--sh:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -80,7 +80,7 @@ button{cursor:pointer;border:0;background:none}
 .done .ok{width:72px;height:72px;border-radius:50%;background:var(--acc2);color:var(--acc);display:grid;place-items:center;font-size:36px;margin:0 auto 12px;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.3)}}
 .code{display:inline-block;font-size:28px;font-weight:900;letter-spacing:4px;background:var(--bg);border-radius:12px;padding:4px 18px;margin:10px 0}
-.bar{position:sticky;bottom:0;z-index:20;background:linear-gradient(to top,var(--bg) 70%,transparent);padding:14px 0 calc(14px + env(safe-area-inset-bottom));margin-top:8px}
+.bar{--fade:14px;position:sticky;bottom:0;z-index:20;background:linear-gradient(to top,var(--bg) calc(100% - var(--fade)),transparent);padding:14px 0 calc(14px + env(safe-area-inset-bottom));margin-top:8px}
 .btn{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:15px;border-radius:14px;font-weight:800;font-size:16px;background:var(--ink);color:#fff;transition:.15s}
 .btn:disabled{background:#cfcdc7;color:#fff;cursor:not-allowed}
 .btn:not(:disabled):active{transform:scale(.98)}
@@ -133,7 +133,7 @@ button{cursor:pointer;border:0;background:none}
   <div class="panel" id="panel" aria-live="polite"></div>
   <div class="bar" id="bar"><p class="hint" id="hint"></p><button class="btn" id="next" disabled>ادامه</button></div>
 </main>
-<p class="ftr"><span id="addr"></span><br>طراحی توسط Dreeix</p>
+<p class="ftr"><span id="addr"></span><br>© ۱۴۰۵ آرایشگاه تیغ · طراحی توسط Dreeix</p>
 
 <script data-src="js/data.js" data-hash="l6wv41">
 // All barbershop settings: one source for services, prices (toman), hours and admin password.

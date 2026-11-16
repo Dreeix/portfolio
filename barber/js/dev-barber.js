@@ -26,6 +26,11 @@
       'Time: now real': () => { window.__now = null; (B || A).render(); },
     },
     checks: [
+      function barTextOnSolid() { // sticky bar: only its top padding may fade, never under the hint/button text (bug: hint overlapped cards)
+        const bar = document.querySelector(".bar"), t = bar?.querySelector(".hint"); if (!bar) return []; if (!t) return ["no .hint in .bar"];
+        const fade = parseFloat(getComputedStyle(bar).getPropertyValue("--fade")), gap = t.getBoundingClientRect().top - bar.getBoundingClientRect().top;
+        return isNaN(fade) || gap < fade ? [`hint sits ${gap | 0}px from bar top, fade is ${fade}px`] : [];
+      },
       function noOverlaps() {
         const L = Store.load().filter(b => b.status !== 'cancelled'), bad = [];
         for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {

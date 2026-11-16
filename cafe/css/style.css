@@ -30,6 +30,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}
 .logo-mark{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),#8a5a30);color:#1b130c;font-size:17px}
 .nav{display:none;gap:26px;font-size:15px;color:var(--muted)}
+.nav a{padding:8px 0}
 .nav a:hover{color:var(--text)}
 .hdr .btn{padding:9px 16px;font-size:14px}
 
