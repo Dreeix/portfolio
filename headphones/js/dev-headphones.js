@@ -1,5 +1,5 @@
 // Headphones dev hooks (localhost only, after ../dev/dev.js)
-// AI: __hp (page API), __hp.scene (3D API, null in static mode), __dbg.site.posterMode(color|'exploded') for poster renders.
+// Script API: __hp (page API), __hp.scene (3D API, null in static mode), __dbg.site.posterMode(color|'exploded') for poster renders.
 (() => {
   const hp = window.__hp, D = hp.D;
   const go = (id, at = 0) => { const y = hp.keyY(id, at); scrollTo({ top: y, behavior: 'instant' }); hp.scene?.renderNow(); return `${id}@${at} y=${Math.round(y)}`; };

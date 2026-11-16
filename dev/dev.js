@@ -1,5 +1,5 @@
 // Dev layer for all portfolio sites. Loaded ONLY on localhost (see each site's common.js).
-// AI API: window.__dbg  ·  Human menu: Ctrl+Shift+D (or Alt+D)
+// Script API: window.__dbg  ·  Dev menu: Ctrl+Shift+D (or Alt+D)
 // Sites may register extras: window.__dbg.site = { name, actions: { label: fn }, checks: [fn -> string[]] }
 (() => {
   const errors = [];
