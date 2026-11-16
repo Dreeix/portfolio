@@ -34,7 +34,15 @@
     font: () => document.fonts.check('16px Vazirmatn') ? [] : ['Vazirmatn not loaded'],
     tapTargets: () => [...document.querySelectorAll('a,button,input')].filter(el => { const r = el.getBoundingClientRect(); return r.width && r.height && r.height < 32 && !el.closest('p,#dbg'); }).map(el => `small tap target (${el.getBoundingClientRect().height | 0}px): ${desc(el)}`).slice(0, 8),
     jsErrors: () => errors.slice(),
+    // inline CSS copied by tools/inline-css.mjs must match its source file (hash fetched at load, see below)
+    inlineCss: () => [...document.querySelectorAll('style[data-src],script[data-src]')].flatMap(s => {
+      const h = cssHashes[s.dataset.src];
+      return h === undefined ? [`${s.dataset.src}: not fetched yet`] : h === s.dataset.hash ? [] : [`inline copy of ${s.dataset.src} is stale → run node tools/inline-css.mjs`];
+    }),
   };
+  const cssHashes = {}; // same FNV-1a as tools/inline-css.mjs
+  const fnv = t => { let h = 0x811c9dc5; for (const c of t.replace(/\r\n/g, '\n')) { h ^= c.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(36); };
+  document.querySelectorAll('style[data-src],script[data-src]').forEach(s => fetch(s.dataset.src, { cache: 'no-store' }).then(r => r.text()).then(t => { cssHashes[s.dataset.src] = fnv(t); }).catch(() => { cssHashes[s.dataset.src] = 'fetch failed'; }));
   const desc = el => el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/).join('.') : '');
 
   const dbg = window.__dbg = {

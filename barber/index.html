@@ -7,7 +7,118 @@
 <meta name="description" content="نوبت آرایشگاه را آنلاین رزرو کنید: انتخاب خدمت، روز و ساعت، بدون تماس و انتظار.">
 <meta name="theme-color" content="#16181d">
 <link rel="preload" href="fonts/Vazirmatn.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/style.css">
+<style data-src="css/style.css" data-hash="3glsfg">
+@font-face{font-family:Vazirmatn;src:url(fonts/Vazirmatn.woff2) format('woff2');font-weight:100 900;font-display:swap}
+:root{--bg:#f5f4f0;--card:#fff;--ink:#16181d;--muted:#6b6f76;--line:#e6e4de;--acc:#0f766e;--acc2:#e6f2f0;--warn:#b42318;--r:16px;--max:720px;--pad:16px;--sh:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.05)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+html{-webkit-text-size-adjust:100%}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;min-height:100svh}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:8px}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.top{background:var(--ink);color:#fff;padding:18px 0 54px;position:relative}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.pole{width:30px;height:30px;border-radius:9px;background:repeating-linear-gradient(-45deg,#e11d48 0 6px,#fff 6px 12px,#1d4ed8 12px 18px,#fff 18px 24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)}
+.top small{display:block;font-weight:400;font-size:12.5px;color:#a7abb3;line-height:1.3}
+.top .admin-link{font-size:13px;color:#a7abb3;padding:8px 4px}
+.top .admin-link:hover{color:#fff}
+.steps{display:flex;gap:6px;margin:-34px auto 18px;position:relative;z-index:2}
+.steps i{flex:1;height:5px;border-radius:9px;background:rgba(255,255,255,.18);transition:background .3s}
+.steps i.on{background:#5eead4}
+.panel{background:var(--card);border-radius:22px;box-shadow:var(--sh);padding:22px 18px;margin-top:-6px;position:relative;z-index:1}
+.panel h1{font-size:21px;font-weight:800;line-height:1.4}
+.panel .sub{color:var(--muted);font-size:14px;margin:2px 0 18px}
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--muted);font-size:14px;margin-bottom:8px;padding:6px 0}
+.back:hover{color:var(--ink)}
+.svcs{display:grid;gap:10px}
+.svc{display:flex;align-items:center;gap:14px;padding:14px;border:1.5px solid var(--line);border-radius:var(--r);text-align:right;width:100%;transition:border-color .15s,background .15s;position:relative}
+.svc:hover{border-color:#c9c6bd}
+.svc.on{border-color:var(--acc);background:var(--acc2)}
+.svc .ic{flex:none;width:46px;height:46px;border-radius:13px;background:var(--bg);display:grid;place-items:center;font-size:22px}
+.svc .t{flex:1;min-width:0}
+.svc b{display:block;font-size:16px}
+.svc span{font-size:13px;color:var(--muted)}
+.svc .pr{text-align:left;font-weight:800;font-size:15px;white-space:nowrap}
+.svc .pr small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.svc .pop{position:absolute;top:-9px;left:14px;background:var(--acc);color:#fff;font-size:11px;padding:0 9px;border-radius:99px}
+.days{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none;scroll-snap-type:x proximity}
+.days::-webkit-scrollbar{display:none}
+.day{flex:none;width:74px;padding:10px 4px;border:1.5px solid var(--line);border-radius:14px;text-align:center;line-height:1.5;scroll-snap-align:start;transition:.15s}
+.day .wd{font-size:12px;color:var(--muted)}
+.day .d{font-size:22px;font-weight:800;display:block}
+.day .m{font-size:11.5px;color:var(--muted)}
+.day.on{background:var(--ink);border-color:var(--ink);color:#fff}.day.on .wd,.day.on .m{color:#c7cad1}
+.day:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.day .cnt{display:block;font-size:10.5px;color:var(--acc);font-weight:700}
+.day.on .cnt{color:#5eead4}
+.tgroup{margin-top:14px}
+.tgroup h3{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.times{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.time{padding:10px 0;border:1.5px solid var(--line);border-radius:12px;font-weight:700;font-size:15px;transition:.15s}
+.time:hover:not(:disabled){border-color:var(--acc);color:var(--acc)}
+.time.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.time:disabled{background:var(--bg);color:#b5b3ad;text-decoration:line-through;cursor:not-allowed;border-color:transparent}
+.time.brk{grid-column:1/-1;font-size:12.5px;font-weight:500;color:var(--muted);text-decoration:none;padding:4px;border:1px dashed var(--line);background:none}
+.none{padding:26px 10px;text-align:center;color:var(--muted);background:var(--bg);border-radius:14px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16px}
+.field input:focus{outline:none;border-color:var(--acc)}
+.field.err input{border-color:var(--warn)}
+.field em{display:block;font-style:normal;color:var(--warn);font-size:13px;margin-top:4px;min-height:1px}
+.ltr{direction:ltr;text-align:right}
+.sum{border:1.5px dashed var(--line);border-radius:var(--r);padding:6px 16px}
+.sum div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.sum div:last-child{border-bottom:0}
+.sum dt{color:var(--muted)}.sum dd{font-weight:700;text-align:left}
+.sum .total dd{font-size:18px;color:var(--acc)}
+.done{text-align:center;padding:10px 0}
+.done .ok{width:72px;height:72px;border-radius:50%;background:var(--acc2);color:var(--acc);display:grid;place-items:center;font-size:36px;margin:0 auto 12px;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.3)}}
+.code{display:inline-block;font-size:28px;font-weight:900;letter-spacing:4px;background:var(--bg);border-radius:12px;padding:4px 18px;margin:10px 0}
+.bar{position:sticky;bottom:0;z-index:20;background:linear-gradient(to top,var(--bg) 70%,transparent);padding:14px 0 calc(14px + env(safe-area-inset-bottom));margin-top:8px}
+.btn{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;padding:15px;border-radius:14px;font-weight:800;font-size:16px;background:var(--ink);color:#fff;transition:.15s}
+.btn:disabled{background:#cfcdc7;color:#fff;cursor:not-allowed}
+.btn:not(:disabled):active{transform:scale(.98)}
+.btn.acc{background:var(--acc)}
+.btn.ghost{background:none;color:var(--ink);border:1.5px solid var(--line)}
+.bar .hint{font-size:13px;color:var(--muted);text-align:center;margin-bottom:8px;min-height:1.6em}
+.alert{background:#fef3f2;color:var(--warn);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:12px}
+.ftr{text-align:center;color:var(--muted);font-size:12.5px;padding:18px 0 28px}
+.view{animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateX(-12px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.login{max-width:360px;margin:0 auto}
+.login .hint{background:var(--acc2);color:var(--acc);font-size:13px;border-radius:10px;padding:8px 12px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{background:var(--bg);border-radius:14px;padding:12px 8px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:900;line-height:1.3}
+.stat span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:6px;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:14px}
+.tabs button{flex:1;padding:8px;border-radius:9px;font-size:14px;font-weight:600;color:var(--muted)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:var(--sh)}
+.dayhead{font-size:13px;font-weight:700;color:var(--muted);margin:16px 0 6px;display:flex;justify-content:space-between}
+.bk{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:#fff}
+.bk .tm{flex:none;width:58px;text-align:center;font-weight:800;line-height:1.3}
+.bk .tm small{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+.bk .who{flex:1;min-width:0}
+.bk .who b{font-size:15px}
+.bk .who span{display:block;font-size:12.5px;color:var(--muted)}
+.bk .acts{display:flex;flex-direction:column;gap:4px;align-self:stretch;justify-content:center}
+.bk .acts button{width:34px;height:32px;border-radius:10px;background:var(--bg);font-size:15px}
+.bk .acts button:hover{background:var(--line)}
+.bk.done-st{opacity:.55}.bk.done-st .who b{text-decoration:line-through}
+.bk .who .tag{display:inline-block;vertical-align:middle}
+.tag{font-size:11px;padding:0 7px;border-radius:99px;background:var(--bg);color:var(--muted);margin-right:4px;font-weight:500}
+.tag.d{background:#fff7e6;color:#a15c07}
+.row{display:flex;gap:8px;margin-top:14px}
+.row .btn{padding:11px;font-size:14px}
+@media (min-width:760px){.panel{padding:30px 32px}.svcs{grid-template-columns:1fr 1fr}}
+</style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%2316181d'/><text x='50' y='68' font-size='54' text-anchor='middle'>💈</text></svg>">
 </head>
 <body>
@@ -24,8 +135,270 @@
 </main>
 <p class="ftr"><span id="addr"></span><br>طراحی توسط Dreeix</p>
 
-<script src="js/data.js"></script>
-<script src="js/store.js"></script>
-<script src="js/book.js"></script>
+<script data-src="js/data.js" data-hash="l6wv41">
+// All barbershop settings: one source for services, prices (toman), hours and admin password.
+window.SHOP = {
+  name: 'آرایشگاه تیغ',
+  tagline: 'نوبت آنلاین، بدون انتظار',
+  address: 'تهران، ستارخان، نرسیده به فلکه دوم، پلاک ۴۰',
+  demo: true,                    // demo: seeds sample bookings, shows admin password hint, no real contact links
+  slotStep: 30,                  // minutes between start times
+  daysAhead: 14,                 // how many days can be booked
+  minLeadMinutes: 30,            // can't book a slot starting sooner than this
+  // day: 0 = Saturday ... 6 = Friday. null = closed. Times "HH:MM".
+  hours: [
+    { open: '10:00', close: '21:00', breaks: [['14:00', '15:00']] },
+    { open: '10:00', close: '21:00', breaks: [['14:00', '15:00']] },
+    { open: '10:00', close: '21:00', breaks: [['14:00', '15:00']] },
+    { open: '10:00', close: '21:00', breaks: [['14:00', '15:00']] },
+    { open: '10:00', close: '21:00', breaks: [['14:00', '15:00']] },
+    { open: '10:00', close: '18:00', breaks: [] },
+    null,
+  ],
+  services: [
+    { id: 'hair', name: 'اصلاح مو', dur: 30, price: 350000, icon: '✂️', desc: 'کوتاهی، شست‌وشو و حالت‌دهی' },
+    { id: 'beard', name: 'اصلاح ریش', dur: 30, price: 200000, icon: '🪒', desc: 'خط‌گیری، فرم‌دهی و حوله‌ی داغ' },
+    { id: 'combo', name: 'مو + ریش', dur: 60, price: 480000, icon: '💈', desc: 'پکیج کامل با تخفیف', popular: true },
+    { id: 'fade', name: 'فید تخصصی', dur: 60, price: 450000, icon: '🔥', desc: 'اسکین‌فید، تیپر یا لو‌فید' },
+    { id: 'color', name: 'رنگ مو', dur: 90, price: 900000, icon: '🎨', desc: 'رنگ و مش، با مشاوره‌ی رنگ' },
+    { id: 'kids', name: 'اصلاح کودک', dur: 30, price: 250000, icon: '🧒', desc: 'زیر ۱۲ سال' },
+  ],
+  // SHA-256 of the admin password. Demo password: 1234. Change with:
+  // node -e "crypto.subtle.digest('SHA-256',new TextEncoder().encode('NEWPASS')).then(b=>console.log(Buffer.from(b).toString('hex')))"
+  // NOTE: client-side only = keeps casual visitors out, not real security. A real shop needs a server.
+  adminHash: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
+};
+</script>
+<script data-src="js/store.js" data-hash="h3wxa7">
+// Booking storage (localStorage) + slot logic. Shared by index.html and admin.html.
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const faNum = n => Number(n).toLocaleString('fa-IR', { useGrouping: true });
+const faDigits = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const enDigits = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+const toMin = hm => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
+const fmtTime = min => faDigits(`${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`);
+const service = id => SHOP.services.find(s => s.id === id);
+
+const Store = (() => {
+  const KEY = 'barber.bookings.v1';
+  const now = () => window.__now || new Date();          // dev can override
+  const dateKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const fromKey = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+  const dayIdx = d => (d.getDay() + 1) % 7;               // 0 = Saturday
+  const hoursFor = k => SHOP.hours[dayIdx(fromKey(k))];
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } }
+  function save(list) { try { localStorage.setItem(KEY, JSON.stringify(list)); return true; } catch { return false; } }
+
+  const overlaps = (a1, a2, b1, b2) => a1 < b2 && b1 < a2;
+
+  // Free start times (minutes) on date k for a service of `dur` minutes
+  function slots(k, dur, list = load()) {
+    const h = hoursFor(k); if (!h) return [];
+    const open = toMin(h.open), close = toMin(h.close), out = [];
+    const busy = [...h.breaks.map(([a, b]) => [toMin(a), toMin(b)]), ...list.filter(b => b.date === k && b.status !== 'cancelled').map(b => [b.start, b.start + b.dur])];
+    const n = now(), isToday = k === dateKey(n), nowMin = n.getHours() * 60 + n.getMinutes() + SHOP.minLeadMinutes;
+    for (let t = open; t + dur <= close; t += SHOP.slotStep) {
+      if (isToday && t < nowMin) continue;
+      if (busy.some(([a, b]) => overlaps(t, t + dur, a, b))) continue;
+      out.push(t);
+    }
+    return out;
+  }
+  // All start times of the day with state, for showing taken slots greyed out
+  function grid(k, dur, list = load()) {
+    const h = hoursFor(k); if (!h) return [];
+    const free = new Set(slots(k, dur, list)), out = [], n = now();
+    const cut = k === dateKey(n) ? n.getHours() * 60 + n.getMinutes() + SHOP.minLeadMinutes : -1;
+    for (let t = toMin(h.open); t + dur <= toMin(h.close); t += SHOP.slotStep) {
+      if (t < cut) continue; // past times today are hidden
+      const inBreak = h.breaks.some(([a, b]) => overlaps(t, t + dur, toMin(a), toMin(b)));
+      if (inBreak) { if (h.breaks.some(([a]) => toMin(a) === t)) out.push({ t, state: 'break' }); continue; }
+      out.push({ t, state: free.has(t) ? 'free' : 'taken' });
+    }
+    return out;
+  }
+  function days() {
+    const out = [], n = now();
+    for (let i = 0; i < SHOP.daysAhead; i++) { const d = new Date(n.getFullYear(), n.getMonth(), n.getDate() + i); out.push(dateKey(d)); }
+    return out;
+  }
+  const validPhone = p => /^09\d{9}$/.test(enDigits(p).replace(/[\s-]/g, ''));
+  const cleanPhone = p => enDigits(p).replace(/[\s-]/g, '');
+
+  // Adds a booking after re-checking the slot (prevents double booking). Returns {ok, booking|error}
+  function add({ service: sid, date, start, name, phone }) {
+    const s = service(sid); if (!s) return { ok: false, error: 'خدمت نامعتبر است' };
+    if (!name || name.trim().length < 2) return { ok: false, error: 'نام را وارد کنید' };
+    if (!validPhone(phone)) return { ok: false, error: 'شماره موبایل معتبر نیست (مثلاً ۰۹۱۲۳۴۵۶۷۸۹)' };
+    const list = load();
+    if (!slots(date, s.dur, list).includes(start)) return { ok: false, error: 'این ساعت همین الان رزرو شد؛ لطفاً ساعت دیگری انتخاب کنید' };
+    const b = { id: crypto.randomUUID?.() || String(Date.now()) + Math.random(), code: String(Math.floor(1000 + Math.random() * 9000)), service: sid, dur: s.dur, price: s.price, date, start, name: name.trim(), phone: cleanPhone(phone), created: Date.now(), status: 'booked' };
+    list.push(b); if (!save(list)) return { ok: false, error: 'ذخیره نشد (حافظه‌ی مرورگر در دسترس نیست)' };
+    return { ok: true, booking: b };
+  }
+  function update(id, patch) { const list = load(), b = list.find(x => x.id === id); if (b) { Object.assign(b, patch); save(list); } return b; }
+  function remove(id) { save(load().filter(x => x.id !== id)); }
+
+  // Demo: a few sample bookings so the calendar and admin don't look empty (fake names, masked fake phones)
+  function seedDemo(force) {
+    if (!SHOP.demo) return;
+    if (!force && localStorage.getItem(KEY + '.seeded')) return;
+    const names = ['علی م.', 'حسین ک.', 'امیر ر.', 'پارسا ن.', 'محمد ج.', 'سینا ت.', 'کیان ص.', 'رضا ب.'];
+    const list = force ? [] : load(); let i = 0;
+    for (const k of days().slice(0, 5)) {
+      const h = hoursFor(k); if (!h) continue;
+      for (const sid of ['combo', 'hair', 'fade', 'beard', 'hair']) {
+        const s = service(sid), free = slots(k, s.dur, list).filter(t => t >= toMin(h.open) + 60);
+        if (!free.length) continue;
+        const t = free[(i * 7) % free.length];
+        list.push({ id: 'demo' + i, code: String(1000 + i * 37), service: sid, dur: s.dur, price: s.price, date: k, start: t, name: names[i % names.length], phone: '0900000000' + (i % 10), created: Date.now(), status: 'booked', demo: true });
+        i++;
+      }
+    }
+    save(list); localStorage.setItem(KEY + '.seeded', '1');
+  }
+
+  return { load, save, slots, grid, days, add, update, remove, seedDemo, validPhone, cleanPhone, dateKey, fromKey, hoursFor, KEY };
+})();
+
+// Persian calendar labels
+const fa = (k, opt) => new Intl.DateTimeFormat('fa-IR-u-ca-persian', opt).format(Store.fromKey(k));
+const dayLabel = k => ({ wd: fa(k, { weekday: 'long' }), d: fa(k, { day: 'numeric' }), m: fa(k, { month: 'long' }) });
+const fullDate = k => fa(k, { weekday: 'long', day: 'numeric', month: 'long' });
+
+// Dev layer: only on local machines
+if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
+  const s = document.createElement('script'); s.src = '../dev/dev.js';
+  s.onload = () => { const c = document.createElement('script'); c.src = 'js/dev-barber.js'; document.body.append(c); };
+  document.head.append(s);
+}
+</script>
+<script data-src="js/book.js" data-hash="1ov1afk">
+// Booking flow: 1 service → 2 day → 3 time → 4 name/phone → 5 confirm → done
+(() => {
+  Store.seedDemo();
+  $('#shopName').textContent = SHOP.name; $('#shopTag').textContent = SHOP.tagline; $('#addr').textContent = SHOP.address;
+
+  const S = { step: 1, service: null, date: null, start: null, name: '', phone: '', error: '', booking: null };
+  const panel = $('#panel'), next = $('#next'), hint = $('#hint');
+  const price = p => `${faNum(p)} تومان`;
+  const dur = m => m >= 60 ? `${faNum(m / 60)} ساعت`.replace('۱٫۵ ساعت', 'یک‌ونیم ساعت') : `${faNum(m)} دقیقه`;
+  const back = `<button class="back" data-back>→ مرحله‌ی قبل</button>`;
+
+  const views = {
+    1: () => `<h1>چه خدمتی می‌خواهید؟</h1><p class="sub">یک خدمت انتخاب کنید.</p>
+      <div class="svcs">${SHOP.services.map(s => `
+        <button class="svc${S.service === s.id ? ' on' : ''}" data-svc="${s.id}" aria-pressed="${S.service === s.id}">
+          ${s.popular ? '<span class="pop">پرطرفدار</span>' : ''}<span class="ic">${s.icon}</span>
+          <span class="t"><b>${s.name}</b><span>${s.desc}</span></span>
+          <span class="pr">${faNum(s.price)}<small>${dur(s.dur)}</small></span>
+        </button>`).join('')}</div>`,
+    2: () => {
+      const s = service(S.service);
+      return `${back}<h1>چه روزی؟</h1><p class="sub">${s.name} · ${dur(s.dur)}</p>
+      <div class="days">${Store.days().map(k => {
+        const L = dayLabel(k), n = Store.slots(k, s.dur).length, closed = !Store.hoursFor(k);
+        return `<button class="day${S.date === k ? ' on' : ''}" data-day="${k}" ${closed || !n ? 'disabled' : ''} aria-label="${fullDate(k)}">
+          <span class="wd">${k === Store.days()[0] ? 'امروز' : L.wd}</span><span class="d">${L.d}</span><span class="m">${L.m}</span>
+          <span class="cnt">${closed ? 'تعطیل' : n ? faNum(n) + ' نوبت' : 'پر'}</span></button>`;
+      }).join('')}</div>`;
+    },
+    3: () => {
+      const s = service(S.service), g = Store.grid(S.date, s.dur);
+      const btn = x => x.state === 'break' ? `<button class="time brk" disabled>☕ استراحت</button>`
+        : `<button class="time${S.start === x.t ? ' on' : ''}" data-time="${x.t}" ${x.state !== 'free' ? 'disabled aria-label="رزرو شده"' : ''}>${fmtTime(x.t)}</button>`;
+      const am = g.filter(x => x.t < 14 * 60), pm = g.filter(x => x.t >= 14 * 60);
+      return `${back}<h1>چه ساعتی؟</h1><p class="sub">${fullDate(S.date)} · ${s.name}</p>
+      ${!g.some(x => x.state === 'free') ? '<p class="none">برای این روز ساعت خالی نمانده.</p>' : ''}
+      ${am.length ? `<div class="tgroup"><h3>صبح و ظهر</h3><div class="times">${am.map(btn).join('')}</div></div>` : ''}
+      ${pm.length ? `<div class="tgroup"><h3>عصر</h3><div class="times">${pm.map(btn).join('')}</div></div>` : ''}`;
+    },
+    4: () => `${back}<h1>اطلاعات شما</h1><p class="sub">برای یادآوری نوبت لازم است.</p>
+      <label class="field" id="fName"><span>نام و نام خانوادگی</span><input id="name" autocomplete="name" value="${S.name.replace(/"/g, '&quot;')}" placeholder="مثلاً علی محمدی"><em></em></label>
+      <label class="field" id="fPhone"><span>شماره موبایل</span><input id="phone" class="ltr" type="tel" inputmode="numeric" autocomplete="tel" maxlength="13" value="${S.phone}" placeholder="۰۹۱۲۳۴۵۶۷۸۹"><em></em></label>`,
+    5: () => {
+      const s = service(S.service);
+      return `${back}<h1>تأیید نوبت</h1><p class="sub">اطلاعات را بررسی کنید.</p>
+      ${S.error ? `<p class="alert">${S.error}</p>` : ''}
+      <dl class="sum">
+        <div><dt>خدمت</dt><dd>${s.name}</dd></div>
+        <div><dt>روز</dt><dd>${fullDate(S.date)}</dd></div>
+        <div><dt>ساعت</dt><dd>${fmtTime(S.start)} تا ${fmtTime(S.start + s.dur)}</dd></div>
+        <div><dt>نام</dt><dd>${esc(S.name)}</dd></div>
+        <div><dt>موبایل</dt><dd class="ltr">${faDigits(Store.cleanPhone(S.phone))}</dd></div>
+        <div class="total"><dt>مبلغ (پرداخت در محل)</dt><dd>${price(s.price)}</dd></div>
+      </dl>`;
+    },
+    6: () => {
+      const b = S.booking, s = service(b.service);
+      return `<div class="done"><div class="ok">✓</div><h1>نوبت شما ثبت شد</h1>
+        <p class="sub" style="margin:4px 0 0">${fullDate(b.date)}، ساعت ${fmtTime(b.start)} · ${s.name}</p>
+        <div class="code">${faDigits(b.code)}</div><p class="sub">کد پیگیری · لطفاً ۵ دقیقه زودتر بیایید.</p></div>`;
+    },
+  };
+  const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+  const canNext = () => ({ 1: !!S.service, 2: !!S.date, 3: S.start != null, 4: S.name.trim().length >= 2 && Store.validPhone(S.phone), 5: true, 6: true })[S.step];
+  const nextLabel = () => ({ 4: 'مرور و تأیید', 5: 'ثبت نوبت', 6: 'رزرو نوبت جدید' })[S.step] || 'ادامه';
+  const hintText = () => {
+    const s = S.service && service(S.service);
+    if (S.step === 1) return s ? `${s.name} · ${price(s.price)}` : 'یک خدمت را انتخاب کنید';
+    if (S.step === 3) return S.start != null ? `${fullDate(S.date)} · ساعت ${fmtTime(S.start)}` : 'یک ساعت خالی انتخاب کنید';
+    if (S.step === 5) return 'پرداخت حضوری · لغو رایگان تا ۲ ساعت قبل';
+    return '';
+  };
+
+  function render(focus = true) {
+    panel.innerHTML = `<div class="view">${views[S.step]()}</div>`;
+    $$('#steps i').forEach((el, i) => el.classList.toggle('on', i < Math.min(S.step, 5)));
+    next.disabled = !canNext(); next.textContent = nextLabel(); next.classList.toggle('acc', S.step === 5); hint.textContent = hintText();
+    if (S.step === 4) bindForm();
+    if (focus) panel.querySelector('h1')?.setAttribute('tabindex', '-1');
+    if (S.step === 2) panel.querySelector('.day.on')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }
+  function go(step, push = true) {
+    S.step = step; S.error = '';
+    if (push) history.pushState({ step }, '', '');
+    render(); scrollTo({ top: 0 });
+  }
+  addEventListener('popstate', e => { const st = e.state?.step || 1; if (S.step === 6) { reset(); return; } S.step = Math.min(st, maxStep()); render(); });
+  const maxStep = () => !S.service ? 1 : !S.date ? 2 : S.start == null ? 3 : 5;
+  function reset() { Object.assign(S, { step: 1, service: null, date: null, start: null, error: '', booking: null }); history.replaceState({ step: 1 }, '', ''); render(); }
+  history.replaceState({ step: 1 }, '', '');
+
+  function bindForm() {
+    const n = $('#name'), p = $('#phone');
+    const upd = () => {
+      S.name = n.value; S.phone = p.value;
+      const pe = p.value && Store.cleanPhone(p.value).length >= 11 && !Store.validPhone(p.value);
+      $('#fPhone').classList.toggle('err', pe); $('#fPhone em').textContent = pe ? 'شماره باید با ۰۹ شروع شود و ۱۱ رقم باشد' : '';
+      next.disabled = !canNext();
+    };
+    n.oninput = p.oninput = upd; upd();
+  }
+
+  panel.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    if (t.dataset.back != null) { history.back(); return; }
+    if (t.dataset.svc) { if (S.service !== t.dataset.svc) { S.date = null; S.start = null; } S.service = t.dataset.svc; render(false); setTimeout(() => go(2), 180); }
+    if (t.dataset.day) { if (S.date !== t.dataset.day) S.start = null; S.date = t.dataset.day; render(false); setTimeout(() => go(3), 180); }
+    if (t.dataset.time) { S.start = +t.dataset.time; render(false); }
+  });
+  next.onclick = () => {
+    if (S.step === 6) return reset();
+    if (S.step === 5) {
+      const r = Store.add({ service: S.service, date: S.date, start: S.start, name: S.name, phone: S.phone });
+      if (!r.ok) { S.error = r.error; if (/ساعت/.test(r.error)) { S.start = null; go(3); S.error = r.error; hint.textContent = r.error; } else render(); return; }
+      S.booking = r.booking; S.name = ''; S.phone = ''; go(6); return;
+    }
+    if (canNext()) go(S.step + 1);
+  };
+  render();
+
+  window.__barber = { S, render, go, reset }; // dev hooks
+})();
+</script>
 </body>
 </html>
