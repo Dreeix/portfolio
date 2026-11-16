@@ -40,6 +40,10 @@ if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) {
       actions: { 'Check project links (async)': () => { window.__dbg.site.checkLinks().then(r => alert(r.join('\n') || 'all project links OK')); return 'running…'; } },
       checks: [
         function projectsComplete() { return ME.projects.flatMap(p => ['id', 'title', 'url', 'thumb', 'desc'].filter(k => !p[k]).map(k => `${p.id || '?'} missing ${k}`)); },
+        // bug 2026-11-16: contact Telegram button rendered with transparent background (card-only rule leaked)
+        function mainButtonsVisible() {
+          return [...document.querySelectorAll('.btn-main')].filter(b => { const cs = getComputedStyle(b); return cs.backgroundImage === 'none' && /rgba\(0, 0, 0, 0\)|transparent/.test(cs.backgroundColor); }).map(b => `invisible main button: "${b.textContent.trim()}"`);
+        },
         function thumbsLoaded() { return [...document.querySelectorAll('.phone img')].filter(i => i.complete && !i.naturalWidth).map(i => `thumb not loaded: ${i.getAttribute('src')}`); },
       ],
       // fetches every project page/extra link and reports non-200s
