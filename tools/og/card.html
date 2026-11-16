@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>og card</title>
+<!-- 1200×630 link-preview card template. Rendered by tools/og.mjs: og('cafe') … og('home'), one screenshot each. Content from assets/js/data.js -->
+<style>
+@font-face{font-family:Vazirmatn;src:url(../font-src/Vazirmatn.woff2) format('woff2');font-weight:100 900}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1200px;height:630px;overflow:hidden;background:#0a0c11}
+body{font-family:Vazirmatn,Tahoma,sans-serif;color:#f4f5f8}
+#card{position:relative;width:1200px;height:630px;overflow:hidden;--a:#8b5cf6;
+  background:radial-gradient(760px 560px at 18% 40%,color-mix(in srgb,var(--a) 42%,transparent),transparent 70%),radial-gradient(520px 420px at 100% 0%,rgba(139,92,246,.18),transparent 70%),linear-gradient(160deg,#10131a,#08090d)}
+#card::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 60px),repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 60px);pointer-events:none}
+.txt{position:absolute;right:72px;top:0;bottom:0;width:600px;display:flex;flex-direction:column;justify-content:center;gap:18px;z-index:2}
+.chip{align-self:flex-start;display:flex;align-items:center;gap:10px;font-size:24px;color:#c9ccd6;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:6px 20px 6px 16px}
+.chip b{font-weight:900;letter-spacing:.5px;background:linear-gradient(90deg,#8b5cf6,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent;direction:ltr}
+h1{font-size:84px;line-height:1.15;font-weight:900}
+.kind{font-size:34px;color:var(--a);font-weight:800;line-height:1.4;filter:brightness(1.25)}
+.tags{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin-top:6px}
+.tags li{font-size:22px;padding:4px 16px;border-radius:12px;background:rgba(255,255,255,.07);color:#dfe2ea}
+.url{position:absolute;right:72px;bottom:40px;font-size:22px;color:#8d93a3;direction:ltr;z-index:2}
+.phones{position:absolute;left:0;top:0;width:520px;height:630px;z-index:1}
+.ph{position:absolute;width:260px;height:527px;border-radius:40px;border:9px solid #050608;background:#000;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.12)}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:top}
+.one .ph{left:150px;top:62px;transform:rotate(-6deg)}
+.three .ph:nth-child(1){left:40px;top:96px;transform:rotate(-12deg) scale(.86)}
+.three .ph:nth-child(2){left:250px;top:96px;transform:rotate(9deg) scale(.86)}
+.three .ph:nth-child(3){left:140px;top:52px;transform:rotate(-2deg);z-index:2}
+.home h1{font-size:62px}
+.home .tags li{font-size:20px;padding:3px 13px}
+.home .txt{width:640px}
+</style>
+</head>
+<body>
+<div id="card"></div>
+<script src="../../assets/js/data.js"></script>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => `&#${c.charCodeAt(0)};`);
+// Renders one card; resolves when its images are decoded
+window.og = id => {
+  const card = document.getElementById('card'), home = id === 'home';
+  const p = home ? null : ME.projects.find(x => x.id === id);
+  const thumbs = home ? ['barber', 'headphones', 'cafe'].map(i => ME.projects.find(x => x.id === i).thumb) : [p.thumb];
+  card.className = home ? 'home' : '';
+  card.style.setProperty('--a', home ? '#8b5cf6' : p.accent);
+  card.innerHTML = `<div class="txt">
+      <div class="chip"><b>Dreeix</b>${home ? '· نمونه‌کارهای مانی' : '· نمونه‌کار طراحی سایت'}</div>
+      <h1>${home ? 'طراحی سایت برای کسب‌وکارهای کوچک' : esc(p.title)}</h1>
+      <p class="kind">${home ? 'سریع، فارسی و موبایل‌محور' : esc(p.kind)}</p>
+      <ul class="tags">${(home ? ME.projects.map(x => x.title) : p.tags.slice(0, 4)).map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    </div>
+    <div class="url">dreeix.github.io/portfolio${home ? '' : '/' + id + '/'}</div>
+    <div class="phones ${thumbs.length > 1 ? 'three' : 'one'}">${thumbs.map(t => `<div class="ph"><img src="../../${t}" alt=""></div>`).join('')}</div>`;
+  return Promise.all([document.fonts.ready, ...[...card.querySelectorAll('img')].map(i => i.decode())]).then(() => id);
+};
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
 // Script API: window.__dbg  ·  Dev menu: Ctrl+Shift+D (or Alt+D)
 // Sites may register extras: window.__dbg.site = { name, actions: { label: fn }, checks: [fn -> string[]] }
 (() => {
+  const devRoot = new URL('../', document.currentScript?.src || location.href).href; // site root (dev/dev.js lives one level down)
   const errors = [];
   addEventListener('error', e => errors.push(`JS error: ${e.message} @ ${e.filename?.split('/').pop()}:${e.lineno}`));
   addEventListener('unhandledrejection', e => errors.push(`Promise: ${e.reason}`));
@@ -34,6 +35,24 @@
     font: () => document.fonts.check('16px Vazirmatn') ? [] : ['Vazirmatn not loaded'],
     tapTargets: () => [...document.querySelectorAll('a,button,input')].filter(el => { const r = el.getBoundingClientRect(); return r.width && r.height && r.height < 32 && !el.closest('p,#dbg'); }).map(el => `small tap target (${el.getBoundingClientRect().height | 0}px): ${desc(el)}`).slice(0, 8),
     jsErrors: () => errors.slice(),
+    // Link previews (Telegram, WhatsApp…): absolute og:/twitter: tags on the live site (tools/og-tags.mjs); the image exists here and is 1200×630
+    ogTags: async () => {
+      const SITE = 'https://dreeix.github.io/portfolio/', m = n => document.querySelector(`meta[property="${n}"],meta[name="${n}"]`)?.content || '';
+      const bad = ['og:title', 'og:description', 'og:url', 'og:image', 'twitter:card', 'twitter:image'].filter(n => !m(n)).map(n => `missing ${n}`);
+      if (bad.length) return bad;
+      const img = m('og:image');
+      if (!img.startsWith(SITE)) return [`og:image is not an absolute ${SITE} URL: ${img}`];
+      if (m('twitter:image') !== img) bad.push('twitter:image differs from og:image');
+      if (m('twitter:card') !== 'summary_large_image') bad.push('twitter:card is not summary_large_image');
+      const page = SITE + location.href.slice(devRoot.length).split(/[?#]/)[0].replace(/index\.html$/, '');
+      const canon = document.querySelector('link[rel=canonical]');
+      if (canon && (m('og:url') !== page || canon.href !== page)) bad.push(`og:url/canonical ${m('og:url')} ≠ ${page}`);
+      const local = new URL(img.slice(SITE.length), devRoot), r = await fetch(local, { cache: 'no-store' }).catch(() => null);
+      if (!r || r.status !== 200) return [...bad, `og:image ${local.pathname} → ${r ? r.status : 'fetch failed'}`];
+      const bmp = await createImageBitmap(await r.blob()).catch(() => null);
+      if (!bmp || bmp.width !== 1200 || bmp.height !== 630) bad.push(`og:image is ${bmp ? bmp.width + '×' + bmp.height : 'not an image'}, expected 1200×630`);
+      return bad;
+    },
     // inline CSS copied by tools/inline-css.mjs must match its source file (hash fetched at load, see below)
     inlineCss: () => [...document.querySelectorAll('style[data-src],script[data-src]')].flatMap(s => {
       const h = cssHashes[s.dataset.src];

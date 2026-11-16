@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /portfolio/dev/
+Disallow: /portfolio/tools/
+
+Sitemap: https://dreeix.github.io/portfolio/sitemap.xml

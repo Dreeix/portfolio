@@ -122,6 +122,8 @@ const flows = {
     await click($('#reset'),150);await click($('#reset'),300);ok(localStorage.getItem('shop.edits.v1')===null&&/برگشت/.test($('#msg').textContent),'two-tap reset restores the demo');
     f=await __dbg.frame('index.html');ok(f.document.querySelectorAll('.card').length===ShopEdits.defaults().products.length&&!f.document.querySelector('.card.sold'),'store back to the demo');__dbg.frameClose();
     await click($('#logout'),300);ok(!!$('#pw'),'logout returns to login');`,
+  '404.html': `ok($$('a[href]').length>=6&&new URL($('.btn').href).pathname==='/','404: home button + demo links resolve against the site root');
+    ok(/پیدا نشد/.test(document.body.textContent),'404 text is Persian');`,
   'shop/': `await demoSweep();
     await click($('[data-open]'),500);const sizes=$$('[data-size]').filter(b=>!b.disabled);ok(sizes.length>0,'product sheet sizes '+sizes.length);
     await click(sizes[0],150);const cols=$$('[data-color]');if(cols[1])await click(cols[1],150);
@@ -147,7 +149,7 @@ const flows = {
     await click($$('[data-color]')[1],400);ok(/hp-/.test(p.src)&&p.src.includes(H.color().id),'poster follows colour');`,
 };
 
-const pages = ['', 'cafe/', 'cafe/menu.html', 'cafe/admin.html', 'gym/', 'barber/', 'barber/admin.html', 'shop/', 'shop/admin.html', 'headphones/', 'headphones/?poster'].filter(p => p.includes(only));
+const pages = ['', 'cafe/', 'cafe/menu.html', 'cafe/admin.html', 'gym/', 'barber/', 'barber/admin.html', 'shop/', 'shop/admin.html', '404.html', 'headphones/', 'headphones/?poster'].filter(p => p.includes(only));
 let bad = 0;
 const runGroup = async (list, gl) => {
   if (!list.length) return;
