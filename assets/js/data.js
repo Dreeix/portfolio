@@ -1,6 +1,7 @@
 // Portfolio content. Add a new site = add one entry to `projects` (+ a thumbnail in assets/img via tools/shot.mjs).
 window.ME = {
-  name: 'Dreeix',
+  name: 'مانی',          // first name only (privacy: no surname/photo)
+  brand: 'Dreeix',
   role: 'طراح و توسعه‌دهنده‌ی وب',
   intro: 'سایت‌های سریع، فارسی و موبایل‌محور برای کسب‌وکارهای کوچک می‌سازم؛ از منوی QR کافه تا سیستم نوبت‌دهی آرایشگاه. بدون قالب‌های سنگین، با کدی که خودم می‌نویسم.',
   // Your own contact links. Empty = hidden. (Only YOUR handles here, never placeholders that belong to someone else.)
