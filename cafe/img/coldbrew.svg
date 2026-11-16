@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" preserveAspectRatio="xMidYMid slice">
+<defs><radialGradient id="g" cx="35%" cy="30%" r="90%"><stop offset="0" stop-color="hsl(37 38% 30%)"/><stop offset="1" stop-color="hsl(37 30% 9%)"/></radialGradient></defs>
+<rect width="400" height="300" fill="url(#g)"/><g><path d="M150 90h100l-14 150h-72z" fill="#f1e6d8" opacity=".22" stroke="#f1e6d8" stroke-width="5"/>
+    <path d="M156 140h88l-9 100h-70z" fill="#8a5a3a" opacity=".85"/>
+    <rect x="170" y="120" width="26" height="26" rx="5" fill="#fff" opacity=".55" transform="rotate(-12 183 133)"/>
+    <rect x="202" y="128" width="24" height="24" rx="5" fill="#fff" opacity=".45" transform="rotate(14 214 140)"/>
+    <path d="M222 60l-12 120" stroke="#c8a26a" stroke-width="8" stroke-linecap="round"/></g></svg>

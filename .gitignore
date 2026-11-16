@@ -1,0 +1,5 @@
+# generated screenshots / scratch
+shots/
+*.log
+.DS_Store
+Thumbs.db
