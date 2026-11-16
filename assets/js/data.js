@@ -6,7 +6,7 @@ window.ME = {
   intro: 'سایت‌های سریع، فارسی و موبایل‌محور برای کسب‌وکارهای کوچک می‌سازم؛ از منوی QR کافه تا سیستم نوبت‌دهی آرایشگاه. بدون قالب‌های سنگین، با کدی که خودم می‌نویسم.',
   // Your own contact links. Empty = hidden. (Only YOUR handles here, never placeholders that belong to someone else.)
   contact: {
-    telegram: '',     // e.g. 'https://t.me/<you>'
+    telegram: 'https://t.me/Dreeix',
     instagram: '',    // e.g. 'https://instagram.com/<you>'
     email: '',        // e.g. 'you@example.com'
     github: 'https://github.com/Dreeix',
